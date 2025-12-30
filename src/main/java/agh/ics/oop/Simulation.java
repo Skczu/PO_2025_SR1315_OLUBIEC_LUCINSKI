@@ -18,7 +18,7 @@ public class Simulation implements Runnable{
         this.animalMoves = animalMoves;
         this.map = map;
         for (Vector2d position: startPositions){
-            Animal animal = new Animal(position);
+            Animal animal = new Animal(position, List.of(1),5);
             try {
                 map.place(animal);
                 animals.add(animal); //adds animal to list if it can be placed correctly

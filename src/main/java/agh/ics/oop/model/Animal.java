@@ -1,18 +1,35 @@
 package agh.ics.oop.model;
 
-public class Animal implements WorldElement {
+import javafx.util.Pair;
+
+import java.util.Comparator;
+import java.util.List;
+
+public class Animal implements WorldElement , Comparable<Animal> {
 
     private MapDirection currentOrientation;
 
     private Vector2d mapPosition;
 
-    public Animal(){
-        this(new Vector2d(2,2));
-    }
+    private final List<Integer> genes;
 
-    public Animal(Vector2d mapPosition){
+    private int usingGene;
+
+    private int energy;
+
+    private int age;
+
+    private int childrenCnt;
+
+
+    public Animal(Vector2d mapPosition, List<Integer> genes, int startEnergy){
         this.currentOrientation = MapDirection.NORTH;
         this.mapPosition = mapPosition;
+        this.usingGene =0;
+        this.age=0;
+        this.childrenCnt = 0;
+        this.genes = genes;
+        this.energy = startEnergy;
     }
 
     @Override
@@ -35,19 +52,45 @@ public class Animal implements WorldElement {
         return mapPosition.equals(position);
     }
 
+    public int getEnergy(){
+        return energy;
+    }
+
     public void move(MoveDirection direction, MoveValidator moveValidator){
-        //potential position after move
-        Vector2d newPosition = mapPosition;
-        switch (direction){
-            case MoveDirection.RIGHT ->currentOrientation=currentOrientation.next()  ; //changes only orientation
-            case MoveDirection.LEFT -> currentOrientation=currentOrientation.previous(); //changes only orientation
-            case MoveDirection.FORWARD ->newPosition = newPosition.add(currentOrientation.toUnitVector());
-            case MoveDirection.BACKWARD ->newPosition = newPosition.subtract(currentOrientation.toUnitVector());
+        //position after move
+        currentOrientation = currentOrientation.rotate(genes.get(usingGene));
+
+        Pair<MapDirection,Vector2d> newPosition = moveValidator.positionAfterMove(currentOrientation,mapPosition);
+
+        currentOrientation = newPosition.getKey();
+        mapPosition = newPosition.getValue();
+
+        usingGene = (usingGene + 1) % genes.size();
+    }
+
+    public void copulate(int consumedEnergy){
+        energy-=consumedEnergy;
+        childrenCnt+=1;
+    }
+
+    public void eat(Grass grass,int grassEnergy){
+        if (grass.getPosition()==mapPosition){
+            energy+=grassEnergy;
         }
-        //prevent leaving map - box defined atop the class
-        //updates actual position only to valid values
-        if (moveValidator.canMoveTo(newPosition) ){
-            mapPosition = newPosition;
-        }
+    }
+
+    public void useEnergy(int dailyConsumption){
+        energy-=dailyConsumption;
+        age+=1;
+    }
+
+
+    @Override
+    public int compareTo(Animal other) {
+        return Comparator
+                .comparingInt(Animal::getEnergy).reversed()
+                .thenComparingInt(a -> a.age).reversed()
+                .thenComparingInt(a -> a.childrenCnt).reversed()
+                .compare(this, other);
     }
 }

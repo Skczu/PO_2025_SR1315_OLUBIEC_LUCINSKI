@@ -15,10 +15,10 @@ public class RectangularMapIntegrationTest {
     @Test
     public void placesAnimalsOnlyOnValidPositions() {
         //when
-        Animal rabbit = new Animal(new Vector2d(0,1));
-        Animal owl = new Animal(new Vector2d(0,1)) ;
-        Animal tigger = new Animal(new Vector2d(-1,10));
-        Animal eeyore = new Animal(new Vector2d(0,0));
+        Animal rabbit = new Animal(new Vector2d(0,1), List.of(1),5);
+        Animal owl = new Animal(new Vector2d(0,1), List.of(1),5) ;
+        Animal tigger = new Animal(new Vector2d(-1,10), List.of(1),5);
+        Animal eeyore = new Animal(new Vector2d(0,0), List.of(1),5);
         RectangularMap map = new RectangularMap(5,5);
 
 
@@ -34,7 +34,7 @@ public class RectangularMapIntegrationTest {
     public void returnsAnimalAtPositionOrNull() throws IncorrectPositionException{
         //given
         RectangularMap map =new RectangularMap(5,5);
-        Animal kanga = new Animal(new Vector2d(2,3));
+        Animal kanga = new Animal(new Vector2d(2,3), List.of(1),5);
 
         //when
         map.place(kanga);
@@ -48,7 +48,7 @@ public class RectangularMapIntegrationTest {
     public void checksIfOccupied() throws IncorrectPositionException{
         //when
         RectangularMap map =new RectangularMap(5,5);
-        map.place(new Animal(new Vector2d(1,3)));
+        map.place(new Animal(new Vector2d(1,3), List.of(1),5));
 
         //then
         assertTrue(map.isOccupied(new Vector2d(1,3)));
@@ -59,7 +59,7 @@ public class RectangularMapIntegrationTest {
     public void acceptsValidRejectsInvalidMoves() throws IncorrectPositionException{
         //when
         RectangularMap map =new RectangularMap(5,5);
-        map.place(new Animal(new Vector2d(1,3)));
+        map.place(new Animal(new Vector2d(1,3), List.of(1),5));
 
         //then
         assertTrue(map.canMoveTo(new Vector2d(2,3)));
@@ -72,8 +72,8 @@ public class RectangularMapIntegrationTest {
     public void movesCorrectly() throws IncorrectPositionException{
         //given
         RectangularMap map = new RectangularMap(5,5);
-        Animal pooh = new Animal(new Vector2d(1,1));
-        Animal piglet = new Animal(new Vector2d(2,2));
+        Animal pooh = new Animal(new Vector2d(1,1), List.of(1),5);
+        Animal piglet = new Animal(new Vector2d(2,2), List.of(1),5);
 
         //when
         map.place(pooh);
@@ -101,9 +101,9 @@ public class RectangularMapIntegrationTest {
     public void discardsInvalidMoves() throws IncorrectPositionException{
         //given
         RectangularMap map = new RectangularMap(5,5);
-        Animal pooh = new Animal(new Vector2d(4,4));
-        Animal piglet = new Animal(new Vector2d(0,0));
-        Animal tigger = new Animal(new Vector2d(0,1));
+        Animal pooh = new Animal(new Vector2d(4,4), List.of(1),5);
+        Animal piglet = new Animal(new Vector2d(0,0), List.of(1),5);
+        Animal tigger = new Animal(new Vector2d(0,1), List.of(1),5);
 
         //when
         map.place(pooh);
@@ -129,9 +129,9 @@ public class RectangularMapIntegrationTest {
     public void getsCorrectElements() throws IncorrectPositionException{
         //given
         RectangularMap map = new RectangularMap(5,5);
-        Animal pooh = new Animal(new Vector2d(4,4));
-        Animal piglet = new Animal(new Vector2d(0,0));
-        Animal tigger = new Animal(new Vector2d(0,1));
+        Animal pooh = new Animal(new Vector2d(4,4), List.of(1),5);
+        Animal piglet = new Animal(new Vector2d(0,0), List.of(1),5);
+        Animal tigger = new Animal(new Vector2d(0,1), List.of(1),5);
 
         //when
         map.place(pooh);

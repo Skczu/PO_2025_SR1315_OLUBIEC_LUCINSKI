@@ -1,6 +1,7 @@
 package agh.ics.oop.model;
 
 import agh.ics.oop.model.util.RandomPositionGenerator;
+import javafx.util.Pair;
 
 import java.util.*;
 
@@ -48,4 +49,9 @@ public class GrassField extends AbstractWorldMap{
         return new Boundary(lowerLeft,upperRight);
     }
 
+    //so far allows infinite movement
+    @Override
+    public Pair<MapDirection, Vector2d> positionAfterMove(MapDirection facing, Vector2d position) {
+        return new Pair<MapDirection,Vector2d>(facing,position.add(facing.toUnitVector()));
+    }
 }

@@ -2,6 +2,7 @@ package agh.ics.oop.presenter;
 
 import agh.ics.oop.OptionsParser;
 import agh.ics.oop.model.MoveDirection;
+import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.navigation.SceneManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -73,6 +74,7 @@ public class MainPresenter {
         invalidMovesMessage.setText("");
         try {
             List<MoveDirection> directions = OptionsParser.parse(textField.getText().split(" "));
+            List<Vector2d> startPositions = List.of(new Vector2d(3,2),new Vector2d(2,1));
             sceneManager.showSimulationWindow(directions);
         }
         catch (IllegalArgumentException e){
