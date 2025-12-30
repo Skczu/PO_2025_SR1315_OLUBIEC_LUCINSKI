@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane minHeight="550.0" minWidth="850.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.MainPresenter">
+    <center>
+        <VBox alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="100.0" spacing="15.0" BorderPane.alignment="CENTER">
+            <children>
+                <Label text="Pass animal moves here" />
+                <TextField fx:id="textField" prefWidth="150.0" text="f f b b">
+                    <VBox.margin>
+                        <Insets />
+                    </VBox.margin></TextField>
+            <Label text="Map Width">
+               <graphic>
+                  <Spinner fx:id="mapWidth" editable="true" initialValue="10" max="100"/>
+               </graphic>
+            </Label>
+            <Label text="Map Height">
+               <graphic>
+                  <Spinner fx:id="mapHeight" editable="true" initialValue="10" max="100" />
+               </graphic>
+            </Label>
+            <CheckBox fx:id="fastAnimals" mnemonicParsing="false" text="Fast Animals" />
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="15.0">
+               <children>
+                   <TitledPane animated="false" text="Animal properties">
+                       <content>
+                           <VBox>
+                               <Label text="Initial animal amount">
+                                   <graphic>
+                                       <Spinner fx:id="initialAnimalAmount" editable="true" initialValue="10" max="1000" prefHeight="15.0" prefWidth="90.0" />
+                                   </graphic>
+                               </Label>
+                               <Label text="Initial animal energy">
+                                   <graphic>
+                                       <Spinner fx:id="initialAnimalEnergy"  initialValue="5" max="1000" editable="true" prefHeight="15.0" prefWidth="90.0" />
+                                   </graphic>
+                               </Label>
+                               <Label text="Daily energy loss">
+                                   <graphic>
+                                       <Spinner fx:id="dailyEnergyLoss"  initialValue="2" max="1000" editable="true" prefHeight="15.0" prefWidth="90.0" />
+                                   </graphic>
+                               </Label>
+                               <Label text="Reproduction ready energy">
+                                   <graphic>
+                                       <Spinner fx:id="reproductionReadyEnergy"  initialValue="7" max="1000" editable="true" prefHeight="25.0" prefWidth="90.0" />
+                                   </graphic>
+                               </Label>
+                               <Label text="Copulation energy loss">
+                                   <graphic>
+                                       <Spinner fx:id="copulationEnergyLoss"  initialValue="4" max="1000" editable="true" prefHeight="25.0" prefWidth="90.0" />
+                                   </graphic>
+                               </Label>
+                           </VBox>
+                       </content>
+                   </TitledPane>
+                  <TitledPane animated="false" text="Grass Properties">
+                     <content>
+                        <VBox>
+                            <Label text="Initial grass amount">
+                                <graphic>
+                                    <Spinner fx:id="initialGrassAmount" initialValue="30" max="1000" editable="true" prefHeight="15.0" prefWidth="90.0" />
+                                </graphic>
+                            </Label>
+                            <Label text="Daily grass growth">
+                                <graphic>
+                                    <Spinner fx:id="dailyGrassGrowth" initialValue="10" max="1000" editable="true" prefHeight="15.0" prefWidth="90.0" />
+                                </graphic>
+                            </Label>
+                            <Label text="Grass energy">
+                                <graphic>
+                                    <Spinner fx:id="grassEnergy" initialValue="3" max="1000" editable="true" prefHeight="15.0" prefWidth="90.0" />
+                                </graphic>
+                            </Label>
+                        </VBox>
+                     </content>
+
+                  </TitledPane>
+               </children>
+            </HBox>
+
+                  <Label text="Minimum mutation amount">
+               <graphic>
+                        <Spinner fx:id="minimumMutationAmount" initialValue="2" max="1000" editable="true" prefHeight="25.0" prefWidth="90.0" />
+               </graphic>
+            </Label>
+                  <Label text="Maximum mutation amount">
+               <graphic>
+                        <Spinner fx:id="maximumMutationAmount" initialValue="5" max="1000" editable="true" prefHeight="25.0" prefWidth="90.0" />
+               </graphic>
+            </Label>
+                  <Label text="Genome length">
+               <graphic>
+                        <Spinner fx:id="genomeLength" initialValue="10" max="1000" editable="true" prefHeight="25.0" prefWidth="90.0" />
+               </graphic>
+            </Label>
+
+                <Button fx:id="startButton" mnemonicParsing="false" onAction="#onSimulationStartClicked" text="START" />
+            <Label fx:id="invalidMovesMessage" />
+            </children>
+            <BorderPane.margin>
+                <Insets left="40.0" right="40.0" />
+            </BorderPane.margin>
+        </VBox>
+    </center>
+</BorderPane>
