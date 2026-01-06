@@ -2,22 +2,25 @@ package agh.ics.oop.presenter;
 
 import agh.ics.oop.Simulation;
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.enums.SimulationParameters;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
-import java.util.List;
 
 public class SimulationPresenter implements MapChangeListener {
+    private Simulation displaySimulation;
 
     private WorldMap worldMap;
 
-    private List<MoveDirection> directions;
+    @FXML
+    private Button togglePauseButton;
 
     @FXML
     private Label moveInfoLabel;
@@ -29,22 +32,22 @@ public class SimulationPresenter implements MapChangeListener {
     static final int BORDER_WIDTH = 2;
     static final int BORDER_OFFSET = BORDER_WIDTH / 2;
 
-
     public void setMap(WorldMap worldMap) {
         this.worldMap = worldMap;
     }
 
-    public void setDirections(List<MoveDirection> directions){
-        this.directions = directions;
-    }
+    public void onPauseToggle() {
+        boolean isPaused = displaySimulation.togglePause();
 
+        togglePauseButton.setText(isPaused ? "START" : "STOP");
+    }
 
     private void drawMap(WorldMap worldMap){
         Boundary boundary = worldMap.getCurrentBounds();
         clearGrid();
 
-        mapGrid.setWidth((boundary.upperRight().getX()-boundary.lowerLeft().getX()+2)*CELL_WIDTH+BORDER_OFFSET);
-        mapGrid.setHeight((boundary.upperRight().getY()-boundary.lowerLeft().getY()+2)*CELL_WIDTH+BORDER_OFFSET);
+        mapGrid.setWidth((boundary.upperRight().x()-boundary.lowerLeft().x()+2)*CELL_WIDTH+BORDER_OFFSET);
+        mapGrid.setHeight((boundary.upperRight().y()-boundary.lowerLeft().y()+2)*CELL_WIDTH+BORDER_OFFSET);
 
         GraphicsContext graphics = mapGrid.getGraphicsContext2D();
         configureFont(graphics,(int) (CELL_WIDTH*0.5),Color.BLACK);
@@ -62,15 +65,12 @@ public class SimulationPresenter implements MapChangeListener {
         });
     }
 
-    public void startSimulation() {
-        //assuming two animals on a grass map
-
-        worldMap = new GrassField(5);
+    public void startSimulation(SimulationParameters parameters) {
+        worldMap = new WorldMap(parameters.mapWidth(), parameters.mapHeight(), parameters.initialGrassAmount());
         worldMap.subscribe(this);
-        List<Vector2d> startPositions = List.of(new Vector2d(3,2),new Vector2d(2,1));
-        Simulation displaySimulation = new Simulation(startPositions,directions,worldMap);
 
-        //no need for thread pool for one simulation
+        displaySimulation = new Simulation(worldMap, parameters);
+
         new Thread(displaySimulation).start();
     }
 
@@ -79,7 +79,6 @@ public class SimulationPresenter implements MapChangeListener {
         graphics.setFill(Color.WHITE);
         graphics.fillRect(0, 0, mapGrid.getWidth(), mapGrid.getHeight());
     }
-
 
     private void configureFont(GraphicsContext graphics, int size, Color color) {
         graphics.setTextAlign(TextAlignment.CENTER);
@@ -106,13 +105,13 @@ public class SimulationPresenter implements MapChangeListener {
         graphics.fillText("y\\x",CELL_WIDTH/2+BORDER_OFFSET,CELL_WIDTH/2+BORDER_OFFSET);
 
         //draws starting from upper left map corner
-        int srartX =boundary.lowerLeft().getX();
+        int srartX =boundary.lowerLeft().x();
         //draw column headers
         for (double x = CELL_WIDTH+BORDER_OFFSET; x < mapGrid.getWidth(); x +=CELL_WIDTH) {
             graphics.fillText(String.valueOf(srartX++), x + CELL_WIDTH/2,CELL_WIDTH/2+BORDER_OFFSET);
         }
 
-        int startY=boundary.upperRight().getY();
+        int startY=boundary.upperRight().y();
         //row headers
         for (double y = CELL_WIDTH+BORDER_OFFSET; y < mapGrid.getHeight(); y +=CELL_WIDTH) {
             graphics.fillText(String.valueOf(startY--),CELL_WIDTH/2+BORDER_OFFSET, y + CELL_WIDTH/2);
@@ -122,13 +121,13 @@ public class SimulationPresenter implements MapChangeListener {
     private void drawEntities(GraphicsContext graphics,Boundary boundary){
         //draws starting from upper left map corner
 
-        int startX = boundary.lowerLeft().getX(); //simulated map object X position
-        int startY = boundary.upperRight().getY(); //simulated map object Y position
+        int startX = boundary.lowerLeft().x(); //simulated map object X position
+        int startY = boundary.upperRight().y(); //simulated map object Y position
         Vector2d position = new Vector2d(startX, startY);
 
         for (double y = CELL_WIDTH+BORDER_OFFSET; y < mapGrid.getHeight() ; y +=CELL_WIDTH) {
 
-            position = new Vector2d(startX, position.getY());
+            position = new Vector2d(startX, position.y());
 
             for (double x = CELL_WIDTH+BORDER_OFFSET; x < mapGrid.getWidth() ; x +=CELL_WIDTH) {
                 if (worldMap.isOccupied(position)) {

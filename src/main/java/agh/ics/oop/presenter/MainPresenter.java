@@ -1,13 +1,9 @@
 package agh.ics.oop.presenter;
 
-import agh.ics.oop.OptionsParser;
-import agh.ics.oop.model.MoveDirection;
-import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.enums.SimulationParameters;
 import agh.ics.oop.navigation.SceneManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-
-import java.util.List;
 
 public class MainPresenter {
 
@@ -17,9 +13,6 @@ public class MainPresenter {
     public void setSceneManager(SceneManager sceneManager) {
         this.sceneManager = sceneManager;
     }
-
-    @FXML
-    private TextField textField;
 
     @FXML
     private Button startButton;
@@ -72,10 +65,26 @@ public class MainPresenter {
 
     public void onSimulationStartClicked() {
         invalidMovesMessage.setText("");
+
+        SimulationParameters simulationParameters = new SimulationParameters(
+                mapWidth.getValue(),
+                mapHeight.getValue(),
+                fastAnimals.isSelected(),
+                initialAnimalAmount.getValue(),
+                initialAnimalEnergy.getValue(),
+                dailyEnergyLoss.getValue(),
+                reproductionReadyEnergy.getValue(),
+                copulationEnergyLoss.getValue(),
+                initialGrassAmount.getValue(),
+                dailyGrassGrowth.getValue(),
+                grassEnergy.getValue(),
+                minimumMutationAmount.getValue(),
+                maximumMutationAmount.getValue(),
+                genomeLength.getValue()
+        );
+
         try {
-            List<MoveDirection> directions = OptionsParser.parse(textField.getText().split(" "));
-            List<Vector2d> startPositions = List.of(new Vector2d(3,2),new Vector2d(2,1));
-            sceneManager.showSimulationWindow(directions);
+            sceneManager.showSimulationWindow(simulationParameters);
         }
         catch (IllegalArgumentException e){
             e.printStackTrace();

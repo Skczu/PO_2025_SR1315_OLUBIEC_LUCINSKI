@@ -1,91 +1,98 @@
 package agh.ics.oop.model;
 
-
 import agh.ics.oop.model.exceptions.IncorrectPositionException;
+import agh.ics.oop.model.util.RandomPositionGenerator;
+import javafx.util.Pair;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
-/**
- * The interface responsible for interacting with the map of the world.
- * Assumes that Vector2d and MoveDirection classes are defined.
- *
- * @author apohllo, idzik
- */
-public interface WorldMap extends MoveValidator {
+public class WorldMap implements MoveValidator {
+    private final Boundary mapBounds;
+    private final Map<Vector2d, Animal> animals = new HashMap<>();
+    private final Map<Vector2d, Grass> grasses = new HashMap<>();
+    private final ArrayList<MapChangeListener> listeners = new ArrayList<>();
+    private final UUID mapId = UUID.randomUUID();
 
-    /**
-     * Place a new animal on the map.
-     *
-     * @param animal The animal to be placed on the map.
-     * @throws  IncorrectPositionException if the animal cannot br placed. The rules for valid placement are the same as for movement.
-     */
-    void place(Animal animal) throws IncorrectPositionException;
+    public WorldMap(int mapWidth, int mapHeight, int grassCount) {
+        mapBounds = new Boundary(new Vector2d(0, 0), new Vector2d(mapWidth - 1, mapHeight - 1));
 
-    /**
-     * Moves an animal (if it is present on the map) according to specified direction.
-     * If the move is not possible, this method has no effect.
-     */
-    void move(Animal animal, MoveDirection direction);
+        RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(mapWidth - 1, mapHeight - 1, grassCount);
+        for(Vector2d grassPosition : randomPositionGenerator) {
+            grasses.put(grassPosition, new Grass(grassPosition));
+        }
+    }
 
-    /**
-     * Return true if given position on the map is occupied. Should not be
-     * confused with canMoveTo since there might be empty positions where the animal
-     * cannot move.
-     *
-     * @param position Position to check.
-     * @return True if the position is occupied.
-     */
-    boolean isOccupied(Vector2d position);
+    public Map<Vector2d, Animal> getAnimals() { //for testing purposes
+        return animals;
+    }
 
-    /**
-     * Return an animal at a given position.
-     *
-     * @param position The position of the animal.
-     * @return animal or null if the position is not occupied.
-     */
-    WorldElement objectAt(Vector2d position);
+    public UUID getId(){
+        return mapId;
+    }
 
+    public List<WorldElement> getElements(){
+        List<WorldElement> grassAndAnimals = new ArrayList<>(grasses.values());
 
-    /**
-     * Return all elements on a WorldMap
-     *
-     * @return a list of worldElement objects
-     */
-    List<WorldElement> getElements();
+        grassAndAnimals.addAll(animals.values());
 
-    /**
-     * Return lowerLeft and upperRight corners of the map.
-     *
-     * @return a Boundary object.
-     */
-    Boundary getCurrentBounds();
+        return grassAndAnimals;
+    }
 
-    /**
-     * Returns the id of the map instance
-     *
-     * @return an int number
-     */
-    UUID getId();
+    public Boundary getCurrentBounds() {
+        return mapBounds;
+    }
 
-    /**
-     * Subscribes map to an event listener
-     *
-     * @param listener the object we are subscribing to
-     */
-    void subscribe(MapChangeListener listener);
+    public WorldElement objectAt(Vector2d position){
+        if (animals.get(position) != null) {
+            return animals.get(position);
+        }
 
-    /**
-     * Unsubscribes map from an event listener
-     *
-     * @param listener the object we are unsubscribing from
-     */
-    void unSubscribe(MapChangeListener listener);
+        return grasses.get(position);
+    }
 
-    /**
-     * Notifies the observer about map changes
-     *
-     * @param message information about event on map
-     */
-    void mapChanged(String message);
+    public boolean isOccupied(Vector2d position) {
+        return objectAt(position) != null;
+    }
+
+    public boolean canMoveTo(Vector2d position) {
+        return !animals.containsKey(position);
+    }
+
+    @Override
+    public Pair<MapDirection, Vector2d> positionAfterMove(MapDirection facing, Vector2d position) {
+        return new Pair<>(facing, position.add(facing.toUnitVector()));
+    }
+
+    public void subscribe(MapChangeListener listener){
+        listeners.add(listener);
+    }
+
+    public void unsubscribe(MapChangeListener listener) {
+        listeners.remove(listener);
+    }
+
+    public void mapChanged(String message){
+        for (MapChangeListener listener : listeners){
+            listener.mapChanged(this, message);
+        }
+    }
+
+    public void place(Animal animal) throws IncorrectPositionException {
+        if (canMoveTo(animal.getPosition())){ //places animal only on valid unoccupied positions
+            animals.put(animal.getPosition(),animal);
+            mapChanged("New animal was placed at: " + animal.getPosition()); //notifies for placing
+        } else{
+            throw new IncorrectPositionException(animal.getPosition());
+        }
+    }
+
+    public void move(Animal animal) {
+        Vector2d posBeforeMove = animal.getPosition();
+
+        if (animals.get(posBeforeMove) == animal) { //checks if passed animal is on our map
+            animals.remove(posBeforeMove);
+            animal.move(this);
+            animals.put(animal.getPosition(), animal);
+        }
+    }
 }

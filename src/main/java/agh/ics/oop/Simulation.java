@@ -1,50 +1,98 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*;
+import agh.ics.oop.model.enums.SimulationParameters;
 import agh.ics.oop.model.exceptions.IncorrectPositionException;
+import agh.ics.oop.model.util.RandomPositionGenerator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class Simulation implements Runnable{
-
-    private final List<MoveDirection> animalMoves;
-
-    private final List<Animal> animals = new ArrayList<>(); //arraylist for efficient access in iteration
-
+public class Simulation implements Runnable {
+    private final List<Animal> animals = new ArrayList<>();
     private final WorldMap map;
+    private boolean paused = false;
 
-    public Simulation(List<Vector2d> startPositions, List<MoveDirection> animalMoves, WorldMap map){
-        this.animalMoves = animalMoves;
+    public Simulation(WorldMap map, SimulationParameters parameters){
         this.map = map;
-        for (Vector2d position: startPositions){
-            Animal animal = new Animal(position, List.of(1),5);
+
+        Vector2d topRightCorner = map.getCurrentBounds().upperRight();
+
+        RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(topRightCorner.x(), topRightCorner.y(), parameters.initialAnimalAmount());
+
+        List<Integer> generatedGenes = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            generatedGenes.add(i);
+        }
+
+        for (Vector2d position : randomPositionGenerator) {
+            Collections.shuffle(generatedGenes);
+
+            Animal animal = new Animal(position, List.copyOf(generatedGenes), parameters.initialAnimalEnergy());
+
             try {
                 map.place(animal);
-                animals.add(animal); //adds animal to list if it can be placed correctly
-            }catch (IncorrectPositionException e){
+
+                animals.add(animal);
+            } catch (IncorrectPositionException e){
                 e.printStackTrace();
             }
         }
     }
 
-    @Override
-    public void run(){ //simulates animal moves with given directions
-        int currAnimal = 0;
-        for (MoveDirection  currMove: animalMoves) {
+    public List<Animal> getAnimals() {
+        return animals;
+    }
+
+    public synchronized boolean togglePause() {
+        paused = !paused;
+
+        if (!paused) notifyAll();
+
+        return paused;
+    }
+
+    private synchronized void handlePause() {
+        while (paused) {
             try {
-                Thread.sleep(500);
+                wait();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            //execute every move on animals in order
-            map.move(animals.get(currAnimal),currMove);
-            currAnimal=(currAnimal+1)%animals.size();
-            //always returns next animal in scope
         }
     }
 
-    public List<Animal> getAnimals() {
-        return animals;
+    @Override
+    public void run() {
+        // initial, single-time pause to let the user see the map before the simulation runs
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            System.out.println(e.getStackTrace());
+        }
+
+        // MAIN DAY LOOP
+        while (true) {
+            handlePause();
+
+            // TODO add more logic here, such as simulateCleanup() or simulateGrassSpawn()
+            simulateMovement();
+
+            // TODO we have access to all simulation & map info here, so we can easily draw simulation stats
+            map.mapChanged("a day has passed");
+        }
+    }
+
+    private void simulateMovement() {
+        for (Animal animal : animals) {
+            map.move(animal);
+        }
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            System.out.println(e.getStackTrace());
+        }
     }
 }

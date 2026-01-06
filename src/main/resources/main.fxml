@@ -4,15 +4,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane minHeight="550.0" minWidth="850.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.MainPresenter">
+<BorderPane minHeight="500.0" minWidth="850.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.MainPresenter">
     <center>
         <VBox alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="100.0" spacing="15.0" BorderPane.alignment="CENTER">
             <children>
-                <Label text="Pass animal moves here" />
-                <TextField fx:id="textField" prefWidth="150.0" text="f f b b">
-                    <VBox.margin>
-                        <Insets />
-                    </VBox.margin></TextField>
             <Label text="Map Width">
                <graphic>
                   <Spinner fx:id="mapWidth" editable="true" initialValue="10" max="100"/>

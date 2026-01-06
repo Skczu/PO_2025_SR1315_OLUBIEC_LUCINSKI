@@ -21,12 +21,11 @@ public class Animal implements WorldElement , Comparable<Animal> {
 
     private int childrenCnt;
 
-
     public Animal(Vector2d mapPosition, List<Integer> genes, int startEnergy){
         this.currentOrientation = MapDirection.NORTH;
         this.mapPosition = mapPosition;
-        this.usingGene =0;
-        this.age=0;
+        this.usingGene = 0;
+        this.age = 0;
         this.childrenCnt = 0;
         this.genes = genes;
         this.energy = startEnergy;
@@ -56,7 +55,7 @@ public class Animal implements WorldElement , Comparable<Animal> {
         return energy;
     }
 
-    public void move(MoveDirection direction, MoveValidator moveValidator){
+    public void move(MoveValidator moveValidator){
         //position after move
         currentOrientation = currentOrientation.rotate(genes.get(usingGene));
 
