@@ -92,4 +92,16 @@ public class Animal implements WorldElement , Comparable<Animal> {
                 .thenComparingInt(a -> a.childrenCnt).reversed()
                 .compare(this, other);
     }
+
+    public List<Integer> getGenes() {
+        return genes;
+    }
+
+    public int getChildrenCnt() {
+        return childrenCnt;
+    }
+
+    public int getAge() {
+        return age;
+    }
 }

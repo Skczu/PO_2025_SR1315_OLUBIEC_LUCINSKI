@@ -8,16 +8,24 @@ import javafx.fxml.FXML;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SimulationPresenter implements MapChangeListener {
     private Simulation displaySimulation;
 
     private WorldMap worldMap;
+
+    private List<Double> chartValues = new ArrayList<>();
 
     @FXML
     private Button togglePauseButton;
@@ -27,6 +35,52 @@ public class SimulationPresenter implements MapChangeListener {
 
     @FXML
     private Canvas mapGrid;
+
+    //statistics labels
+    @FXML
+    private Label livingAnimalsLabel;
+
+    @FXML
+    private Label grassFieldsLabel;
+
+    @FXML
+    private Label unoccupiedFieldsLabel;
+
+    @FXML
+    private Label avgLifeSpanLabel;
+
+    @FXML
+    private Label avgLivingEnergyLabel;
+
+    @FXML
+    private Label avgChildrenCntLabel;
+
+    @FXML
+    private Label genomeVboxLabel;
+
+    @FXML
+    private Label firstGenome;
+
+    @FXML
+    private Label secondGenome;
+
+    @FXML
+    private Label thirdGenome;
+
+    @FXML
+    private Label displayedStatisticsLabel;
+
+    @FXML
+    private ChoiceBox<String> statsChoiceBox;
+
+    @FXML
+    private void onChoiceChanged() {
+        String value = statsChoiceBox.getValue();
+        handleChoice(value);
+    }
+
+    @FXML
+    private LineChart<Integer,Double> statsChart;
 
     final static int CELL_WIDTH = 50;
     static final int BORDER_WIDTH = 2;
@@ -62,6 +116,30 @@ public class SimulationPresenter implements MapChangeListener {
         Platform.runLater(() -> {
             drawMap(worldMap);
             moveInfoLabel.setText(message);
+
+            //set statistics
+
+            List<List<Integer>> bestGenes = displaySimulation.getSimulationStatistics().getMostCommonGenomes(3);
+
+            livingAnimalsLabel.setText( "Living animals: " + displaySimulation.getSimulationStatistics().getAnimalsCnt().getLast());
+
+            grassFieldsLabel.setText("Grass fields: " + displaySimulation.getSimulationStatistics().getGrassesCnt().getLast());
+
+            unoccupiedFieldsLabel.setText("UnoUnoccupied fields: " + displaySimulation.getSimulationStatistics().getFreeSpaces().getLast());
+
+            avgLifeSpanLabel.setText("Avg life span: " + displaySimulation.getSimulationStatistics().getAvgLifespan().getLast());
+
+            avgLivingEnergyLabel.setText("Avg living energy: " + displaySimulation.getSimulationStatistics().getAvgEnergy().getLast());
+
+            avgChildrenCntLabel.setText("Avg children cnt: " + displaySimulation.getSimulationStatistics().getAvgChildrenCnt().getLast());
+
+            firstGenome.setText("• " + bestGenes.get(0));
+
+            secondGenome.setText("• " + bestGenes.get(1));
+
+            thirdGenome.setText("• " + bestGenes.get(2));
+
+            updateChart();
         });
     }
 
@@ -70,6 +148,11 @@ public class SimulationPresenter implements MapChangeListener {
         worldMap.subscribe(this);
 
         displaySimulation = new Simulation(worldMap, parameters);
+
+        //setting up initial values for statistics, choiceBox and chart on start
+        String value = statsChoiceBox.getValue();
+        handleChoice(value);
+        statsChart.setCreateSymbols(false);
 
         new Thread(displaySimulation).start();
     }
@@ -140,5 +223,36 @@ public class SimulationPresenter implements MapChangeListener {
             }
             position = position.subtract(new Vector2d(0,1));
         }
+    }
+
+
+    private void handleChoice(String value) {
+        chartValues = switch (value) {
+            case "Living animals" -> displaySimulation.getSimulationStatistics().getAnimalsCnt();
+            case "Grass fields" -> displaySimulation.getSimulationStatistics().getGrassesCnt();
+            case "Unoccupied fields" -> displaySimulation.getSimulationStatistics().getFreeSpaces();
+            case "Avg life span" -> displaySimulation.getSimulationStatistics().getAvgLifespan();
+            case "Avg living energy" -> displaySimulation.getSimulationStatistics().getAvgEnergy();
+            case "Avg living children cnt" -> displaySimulation.getSimulationStatistics().getAvgChildrenCnt();
+            default -> throw new RuntimeException("Invalid option in choiceBox");
+        };
+    }
+
+    private void updateChart() {
+        if (chartValues == null || chartValues.isEmpty()) {
+            return;
+        }
+
+        statsChart.getData().clear();
+
+        XYChart.Series<Integer, Double> series = new XYChart.Series<>();
+        series.setName("Chosen statistic value");
+
+        for (int i = 0; i < chartValues.size(); i++) {
+            series.getData().add(
+                    new XYChart.Data<>(i, chartValues.get(i))
+            );
+        }
+        statsChart.getData().add(series);
     }
 }

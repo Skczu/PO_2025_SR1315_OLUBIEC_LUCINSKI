@@ -26,6 +26,10 @@ public class WorldMap implements MoveValidator {
         return animals;
     }
 
+    public Map<Vector2d, Grass> getGrasses() {
+        return grasses;
+    }
+
     public UUID getId(){
         return mapId;
     }

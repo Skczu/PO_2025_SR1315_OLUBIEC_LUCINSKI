@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.collections.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.canvas.*?>
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
 
 <BorderPane minHeight="700.0" minWidth="850.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.SimulationPresenter">
     <center>
@@ -15,9 +17,56 @@
                <VBox.margin>
                   <Insets bottom="20.0" />
                </VBox.margin></Canvas>
-                <Button fx:id="togglePauseButton" onAction="#onPauseToggle" text="STOP"/>
+                <Button fx:id="togglePauseButton" onAction="#onPauseToggle" text="STOP" />
             </children>
         </VBox>
 
     </center>
+   <left>
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0" spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="livingAnimalsLabel" text="Living animals" />
+            <Label fx:id="grassFieldsLabel" text="Grass fields" />
+            <Label fx:id="unoccupiedFieldsLabel" text="Unoccupied fields" />
+            <Label fx:id="avgLifeSpanLabel" text="Avg life span" />
+            <Label fx:id="avgLivingEnergyLabel" text="Avg living energy" />
+            <Label fx:id="avgChildrenCntLabel" text="Avg living children cnt" />
+            <VBox alignment="CENTER" prefHeight="100.0" prefWidth="100.0">
+               <children>
+                  <Label fx:id="genomeVboxLabel" text="Most common genomes" />
+                  <Label fx:id="firstGenome" text="• genome" />
+                  <Label fx:id="secondGenome" text="• genome" />
+                  <Label fx:id="thirdGenome" text="• genome" />
+               </children>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </VBox>
+             <Label fx:id="displayedStatisticsLabel" text="Select a statistic to display on the chart">
+               <VBox.margin>
+                  <Insets top="30.0" />
+               </VBox.margin></Label>
+             <ChoiceBox fx:id="statsChoiceBox" onAction="#onChoiceChanged" value="Living animals">
+                 <items>
+                     <FXCollections fx:factory="observableArrayList">
+                         <String fx:value="Living animals" />
+                         <String fx:value="Grass fields" />
+                         <String fx:value="Unoccupied fields" />
+                         <String fx:value="Avg life span" />
+                         <String fx:value="Avg living energy" />
+                         <String fx:value="Avg living children cnt" />
+                     </FXCollections>
+                 </items>
+             </ChoiceBox>
+             <LineChart fx:id="statsChart" animated="false">
+                 <xAxis>
+                     <NumberAxis label="Days" tickUnit="0.2" />
+                     <CategoryAxis side="BOTTOM" />
+                 </xAxis>
+                 <yAxis>
+                     <NumberAxis lowerBound="-1.0" upperBound="0.0" />
+                 </yAxis>
+            </LineChart>
+         </children></VBox>
+   </left>
 </BorderPane>

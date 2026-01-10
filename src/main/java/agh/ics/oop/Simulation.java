@@ -5,20 +5,24 @@ import agh.ics.oop.model.enums.SimulationParameters;
 import agh.ics.oop.model.exceptions.IncorrectPositionException;
 import agh.ics.oop.model.util.RandomPositionGenerator;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class Simulation implements Runnable {
     private final List<Animal> animals = new ArrayList<>();
+    private final List<Animal> deadAnimals = new ArrayList<>(); //for statistics purposes
     private final WorldMap map;
     private boolean paused = false;
+
+    private final SimulationStatistics simulationStatistics;
+    private final StatisticsExporter exporter;
 
     public Simulation(WorldMap map, SimulationParameters parameters){
         this.map = map;
 
         Vector2d topRightCorner = map.getCurrentBounds().upperRight();
-
         RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(topRightCorner.x(), topRightCorner.y(), parameters.initialAnimalAmount());
 
         List<Integer> generatedGenes = new ArrayList<>();
@@ -33,17 +37,17 @@ public class Simulation implements Runnable {
 
             try {
                 map.place(animal);
-
                 animals.add(animal);
             } catch (IncorrectPositionException e){
                 e.printStackTrace();
             }
         }
+        simulationStatistics = new SimulationStatistics(this);
+        simulationStatistics.update(); //first update for initial data
+
+        exporter = new StatisticsExporter(simulationStatistics,this.map.getId());
     }
 
-    public List<Animal> getAnimals() {
-        return animals;
-    }
 
     public synchronized boolean togglePause() {
         paused = !paused;
@@ -81,6 +85,12 @@ public class Simulation implements Runnable {
 
             // TODO we have access to all simulation & map info here, so we can easily draw simulation stats
             map.mapChanged("a day has passed");
+            simulationStatistics.update(); //update statistics every day
+            try {
+                exporter.export();  //try to export day data
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -94,5 +104,21 @@ public class Simulation implements Runnable {
         } catch (InterruptedException e) {
             System.out.println(e.getStackTrace());
         }
+    }
+
+    public List<Animal> getAnimals() {
+        return animals;
+    }
+
+    public List<Animal> getDeadAnimals() {
+        return deadAnimals;
+    }
+
+    public WorldMap getMap() {
+        return map;
+    }
+
+    public SimulationStatistics getSimulationStatistics() {
+        return simulationStatistics;
     }
 }
