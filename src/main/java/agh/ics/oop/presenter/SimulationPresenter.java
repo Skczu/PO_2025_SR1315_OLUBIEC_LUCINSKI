@@ -133,11 +133,17 @@ public class SimulationPresenter implements MapChangeListener {
 
             avgChildrenCntLabel.setText("Avg children cnt: " + displaySimulation.getSimulationStatistics().getAvgChildrenCnt().getLast());
 
-            firstGenome.setText("• " + bestGenes.get(0));
+            if(!bestGenes.isEmpty()){
+                firstGenome.setText("• " + bestGenes.get(0));
+            }
 
-            secondGenome.setText("• " + bestGenes.get(1));
+            if(bestGenes.size()>1){
+                secondGenome.setText("• " + bestGenes.get(1));
+            }
 
-            thirdGenome.setText("• " + bestGenes.get(2));
+            if(bestGenes.size()>2){
+                thirdGenome.setText("• " + bestGenes.get(2));
+            }
 
             updateChart();
         });
