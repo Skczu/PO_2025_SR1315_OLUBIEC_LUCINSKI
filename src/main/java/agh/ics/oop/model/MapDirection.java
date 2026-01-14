@@ -48,6 +48,19 @@ public enum MapDirection {
         return newDirection;
     }
 
+    public MapDirection bounce(){
+        return switch(this) {
+            case NORTH -> SOUTH;
+            case NORTHEAST ->SOUTHEAST;
+            case EAST ->WEST;
+            case SOUTHEAST -> NORTHEAST;
+            case SOUTH -> NORTH;
+            case SOUTHWEST -> NORTHWEST;
+            case WEST -> EAST;
+            case NORTHWEST -> SOUTHWEST;
+        };
+    }
+
     public Vector2d toUnitVector(){ //returns unitary vector corresponding to direction
         return switch(this) {
             case NORTH -> new Vector2d(0,1);
