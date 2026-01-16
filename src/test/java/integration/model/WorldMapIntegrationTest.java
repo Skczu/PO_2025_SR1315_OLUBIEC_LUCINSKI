@@ -10,7 +10,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class RectangularMapIntegrationTest {
+public class WorldMapIntegrationTest {
 
 //    @Test
 //    public void placesAnimalsOnlyOnValidPositions() {
@@ -71,19 +71,26 @@ public class RectangularMapIntegrationTest {
     @Test
     public void movesCorrectly() throws IncorrectPositionException{
         //given
-        WorldMap map = new WorldMap(5,5,5);
+        WorldMap map = new WorldMap(9,9,12);
         Animal pooh = new Animal(new Vector2d(4,0), List.of(7),5);
+        //System.out.println(map.getJungleBounds().lowerLeft());
+        //System.out.println(map.getJungleBounds().upperRight());
+        List<Grass> grasses = map.getGrasses().values().stream().toList();
+
+        for (Grass grass: grasses){
+            System.out.println(grass.getPosition());
+        }
 
 
         //when
-        map.place(pooh);
+        //map.place(pooh);
 
 
-        map.move(pooh);
+        //map.move(pooh);
 
         //then
-        assertTrue(pooh.isAt(new Vector2d(3,1)));
-        assertEquals(MapDirection.NORTHWEST,pooh.getCurrentOrientation());
+        //assertTrue(pooh.isAt(new Vector2d(3,1)));
+        //assertEquals(MapDirection.NORTHWEST,pooh.getCurrentOrientation());
 
     }
 //

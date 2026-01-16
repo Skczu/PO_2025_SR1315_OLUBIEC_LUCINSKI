@@ -7,6 +7,8 @@ import java.util.List;
 
 public class Animal implements WorldElement , Comparable<Animal> {
 
+    static final int MINIMAL_FAST_ENERGY=20;
+
     private MapDirection currentOrientation;
 
     private Vector2d mapPosition;
@@ -21,6 +23,8 @@ public class Animal implements WorldElement , Comparable<Animal> {
 
     private int childrenCnt;
 
+    private int speed;
+
     public Animal(Vector2d mapPosition, List<Integer> genes, int startEnergy){
         this.currentOrientation = MapDirection.NORTH;
         this.mapPosition = mapPosition;
@@ -29,6 +33,7 @@ public class Animal implements WorldElement , Comparable<Animal> {
         this.childrenCnt = 0;
         this.genes = genes;
         this.energy = startEnergy;
+        this.speed=1;
     }
 
     @Override
@@ -49,10 +54,6 @@ public class Animal implements WorldElement , Comparable<Animal> {
     @Override
     public boolean isAt(Vector2d position){
         return mapPosition.equals(position);
-    }
-
-    public int getEnergy(){
-        return energy;
     }
 
     public void move(MoveValidator moveValidator){
@@ -83,6 +84,11 @@ public class Animal implements WorldElement , Comparable<Animal> {
         age+=1;
     }
 
+    public void setSpeed(){
+        if(energy>MINIMAL_FAST_ENERGY){
+            speed=1+MINIMAL_FAST_ENERGY-energy;
+        }
+    }
 
     @Override
     public int compareTo(Animal other) {
@@ -103,5 +109,9 @@ public class Animal implements WorldElement , Comparable<Animal> {
 
     public int getAge() {
         return age;
+    }
+
+    public int getEnergy(){
+        return energy;
     }
 }

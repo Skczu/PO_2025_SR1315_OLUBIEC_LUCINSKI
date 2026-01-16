@@ -11,16 +11,18 @@ import java.util.Collections;
 import java.util.List;
 
 public class Simulation implements Runnable {
-    private final List<Animal> animals = new ArrayList<>();
+    private List<Animal> animals = new ArrayList<>();
     private final List<Animal> deadAnimals = new ArrayList<>(); //for statistics purposes
     private final WorldMap map;
     private boolean paused = false;
 
     private final SimulationStatistics simulationStatistics;
     private final StatisticsExporter exporter;
+    private final SimulationParameters parameters;
 
     public Simulation(WorldMap map, SimulationParameters parameters){
         this.map = map;
+        this.parameters = parameters;
 
         Vector2d topRightCorner = map.getCurrentBounds().upperRight();
         RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(topRightCorner.x(), topRightCorner.y(), parameters.initialAnimalAmount());
@@ -82,7 +84,11 @@ public class Simulation implements Runnable {
             handlePause();
 
             // TODO add more logic here, such as simulateCleanup() or simulateGrassSpawn()
+            die();
             simulateMovement();
+            consumeEnergy();
+            map.growGrass(parameters.dailyGrassGrowth());
+
 
             // TODO we have access to all simulation & map info here, so we can easily draw simulation stats
             map.mapChanged("a day has passed");
@@ -107,6 +113,24 @@ public class Simulation implements Runnable {
         }
     }
 
+    public void consumeEnergy(){
+        for (Animal animal : animals) {
+            animal.useEnergy(parameters.dailyEnergyLoss());
+        }
+    }
+
+    public void die(){
+        for (Animal animal : animals){
+            //TODO remove animals from map as well
+            if(animal.getEnergy()<0){
+                deadAnimals.add(animal);
+            }
+        }
+        animals=animals.stream()
+                .filter(animal -> animal.getEnergy()>=0)
+                .toList();
+    }
+
     public List<Animal> getAnimals() {
         return animals;
     }
@@ -117,6 +141,10 @@ public class Simulation implements Runnable {
 
     public WorldMap getMap() {
         return map;
+    }
+
+    public SimulationParameters getParameters() {
+        return parameters;
     }
 
     public SimulationStatistics getSimulationStatistics() {

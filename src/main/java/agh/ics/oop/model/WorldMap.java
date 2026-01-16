@@ -1,13 +1,14 @@
 package agh.ics.oop.model;
 
 import agh.ics.oop.model.exceptions.IncorrectPositionException;
-import agh.ics.oop.model.util.RandomPositionGenerator;
+import agh.ics.oop.model.util.RandomGrassGenerator;
 import javafx.util.Pair;
 
 import java.util.*;
 
 public class WorldMap implements MoveValidator {
     private final Boundary mapBounds;
+    private final Boundary jungleBounds;
     private final Map<Vector2d, Animal> animals = new HashMap<>();
     private final Map<Vector2d, Grass> grasses = new HashMap<>();
     private final ArrayList<MapChangeListener> listeners = new ArrayList<>();
@@ -15,11 +16,8 @@ public class WorldMap implements MoveValidator {
 
     public WorldMap(int mapWidth, int mapHeight, int grassCount) {
         mapBounds = new Boundary(new Vector2d(0, 0), new Vector2d(mapWidth - 1, mapHeight - 1));
-
-        RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(mapWidth - 1, mapHeight - 1, grassCount);
-        for(Vector2d grassPosition : randomPositionGenerator) {
-            grasses.put(grassPosition, new Grass(grassPosition));
-        }
+        jungleBounds = calculateJungle(mapWidth,mapHeight);
+        growGrass(grassCount);
     }
 
     public Map<Vector2d, Animal> getAnimals() { //for testing purposes
@@ -32,6 +30,10 @@ public class WorldMap implements MoveValidator {
 
     public UUID getId(){
         return mapId;
+    }
+
+    public Boundary getJungleBounds() {
+        return jungleBounds;
     }
 
     public List<WorldElement> getElements(){
@@ -78,7 +80,7 @@ public class WorldMap implements MoveValidator {
 
         //validated new position for crazy cases like 1x1 map
         if(!newPosition.precedes(mapBounds.upperRight()) || !newPosition.follows(mapBounds.lowerLeft())){
-            return new Pair<>(facing, newPosition);
+            return new Pair<>(facing, position);
         }
 
         //for now checks if occupied by another animal
@@ -120,6 +122,24 @@ public class WorldMap implements MoveValidator {
             animals.remove(posBeforeMove);
             animal.move(this);
             animals.put(animal.getPosition(), animal);
+        }
+    }
+
+    private Boundary calculateJungle(int width, int height) {
+
+        int jungleHeight = Math.max(1, (int) Math.round( height * 0.2));
+        int yStart = (height - jungleHeight) / 2;
+
+        return new Boundary(
+                new Vector2d(0, yStart),
+                new Vector2d(width-1, yStart + jungleHeight - 1)
+        );
+    }
+
+    public void growGrass(int grassCnt){
+        RandomGrassGenerator generator = new RandomGrassGenerator(mapBounds,jungleBounds,grassCnt,new HashSet<>(grasses.keySet()));
+        for (Vector2d newPos : generator){
+            grasses.put(newPos,new Grass(newPos));
         }
     }
 }
