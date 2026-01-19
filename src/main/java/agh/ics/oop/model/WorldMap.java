@@ -77,12 +77,6 @@ public class WorldMap implements MoveValidator {
             return new Pair<>(facing, newPosition);
         }
 
-        //for now checks if occupied by another animal
-        //TODO delete after enabling multiple animals on one field
-        if (!canMoveTo(newPosition)){
-            return new Pair<>(facing, position);
-        }
-
         return new Pair<>(facing, newPosition);
     }
 
