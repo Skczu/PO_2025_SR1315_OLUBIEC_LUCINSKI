@@ -71,7 +71,7 @@ public class WorldMapIntegrationTest {
     @Test
     public void movesCorrectly() throws IncorrectPositionException{
         //given
-        WorldMap map = new WorldMap(9,9,12);
+//        WorldMap map = new WorldMap(9,9,12);
         Animal pooh = new Animal(new Vector2d(4,0), List.of(7),5);
         //System.out.println(map.getJungleBounds().lowerLeft());
         //System.out.println(map.getJungleBounds().upperRight());
