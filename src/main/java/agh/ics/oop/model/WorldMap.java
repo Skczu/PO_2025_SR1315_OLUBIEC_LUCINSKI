@@ -60,7 +60,30 @@ public class WorldMap implements MoveValidator {
 
     @Override
     public Pair<MapDirection, Vector2d> positionAfterMove(MapDirection facing, Vector2d position) {
-        return new Pair<>(facing, position.add(facing.toUnitVector()));
+        Vector2d newPosition = position.add(facing.toUnitVector());
+
+        if (newPosition.y()>mapBounds.upperRight().y() || newPosition.y()<mapBounds.lowerLeft().y()){
+            //bounces of the board on north and south ensures valid y
+            facing=facing.bounce();
+            newPosition = position.add(facing.toUnitVector());
+        }
+
+        //x coordinate is always moduled by map width so the animal goes out on the other end ensures valid x
+        //uses Math.FloorMod instead of % to work properly with x<0
+        newPosition = new Vector2d(Math.floorMod(newPosition.x(),mapBounds.upperRight().x()+1), newPosition.y());
+
+        //validated new position for crazy cases like 1x1 map
+        if(!newPosition.precedes(mapBounds.upperRight()) || !newPosition.follows(mapBounds.lowerLeft())){
+            return new Pair<>(facing, newPosition);
+        }
+
+        //for now checks if occupied by another animal
+        //TODO delete after enabling multiple animals on one field
+        if (!canMoveTo(newPosition)){
+            return new Pair<>(facing, position);
+        }
+
+        return new Pair<>(facing, newPosition);
     }
 
     public void subscribe(MapChangeListener listener){

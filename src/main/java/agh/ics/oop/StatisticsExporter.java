@@ -17,7 +17,7 @@ public class StatisticsExporter {
     }
 
     public void export() throws IOException {
-        try (FileWriter writer = new FileWriter("statistics"+mapUid+".csv", false)) {
+        try (FileWriter writer = new FileWriter("statistics/statistics"+mapUid+".csv", false)) {
 
             List<List<Integer>> genomes = statistics.getMostCommonGenomes(3);
 
@@ -60,7 +60,7 @@ public class StatisticsExporter {
             writer.append(";;;;;\n");
 
             writer.append("firstGenome");
-            if (!genomes.isEmpty()) {
+            if(!genomes.isEmpty()){
                 for (Integer val : genomes.get(0)){
                     writer.append(";").append(String.valueOf(val));
                 }
@@ -68,7 +68,7 @@ public class StatisticsExporter {
             writer.append("\n");
 
             writer.append("secondGenome");
-            if (genomes.size() > 1) {
+            if(genomes.size()>1){
                 for (Integer val : genomes.get(1)){
                     writer.append(";").append(String.valueOf(val));
                 }
@@ -76,7 +76,7 @@ public class StatisticsExporter {
             writer.append("\n");
 
             writer.append("thirdGenome");
-            if (genomes.size() > 2) {
+            if(genomes.size()>2){
                 for (Integer val : genomes.get(2)){
                     writer.append(";").append(String.valueOf(val));
                 }

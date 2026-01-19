@@ -25,6 +25,7 @@ public class Simulation implements Runnable {
         Vector2d topRightCorner = map.getCurrentBounds().upperRight();
         RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(topRightCorner.x(), topRightCorner.y(), parameters.initialAnimalAmount());
 
+        //changed to correspond with simulationParameters
         List<Integer> generatedGenes = new ArrayList<>();
         for (int i = 0; i < parameters.genomeLength(); i++) {
             generatedGenes.add(i);
