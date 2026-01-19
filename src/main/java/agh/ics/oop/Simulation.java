@@ -26,7 +26,7 @@ public class Simulation implements Runnable {
         RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(topRightCorner.x(), topRightCorner.y(), parameters.initialAnimalAmount());
 
         List<Integer> generatedGenes = new ArrayList<>();
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < parameters.genomeLength(); i++) {
             generatedGenes.add(i);
         }
 
@@ -45,7 +45,7 @@ public class Simulation implements Runnable {
         simulationStatistics = new SimulationStatistics(this);
         simulationStatistics.update(); //first update for initial data
 
-        exporter = new StatisticsExporter(simulationStatistics,this.map.getId());
+        exporter = new StatisticsExporter(simulationStatistics, this.map.getId());
     }
 
 
@@ -80,8 +80,13 @@ public class Simulation implements Runnable {
         while (true) {
             handlePause();
 
-            // TODO add more logic here, such as simulateCleanup() or simulateGrassSpawn()
+            removeDeadAnimals();
+
             simulateMovement();
+
+            consumeGrass();
+
+            copulate();
 
             // TODO we have access to all simulation & map info here, so we can easily draw simulation stats
             map.mapChanged("a day has passed");
@@ -94,6 +99,13 @@ public class Simulation implements Runnable {
         }
     }
 
+    private void removeDeadAnimals() {
+        List<Animal> diedToday = map.removeDeadAnimals();
+
+        deadAnimals.addAll(diedToday);
+        animals.removeAll(diedToday);
+    }
+
     private void simulateMovement() {
         for (Animal animal : animals) {
             map.move(animal);
@@ -104,6 +116,14 @@ public class Simulation implements Runnable {
         } catch (InterruptedException e) {
             System.out.println(e.getStackTrace());
         }
+    }
+
+    private void consumeGrass() {
+        map.consumeGrass();
+    }
+
+    private void copulate() {
+        animals.addAll(map.copulate());
     }
 
     public List<Animal> getAnimals() {

@@ -35,6 +35,7 @@ public class SimulationStatistics {
         //TODO should work after changing getElements to display only first animal on given position
         int width = simulation.getMap().getCurrentBounds().upperRight().x()-simulation.getMap().getCurrentBounds().lowerLeft().x();
         int height = simulation.getMap().getCurrentBounds().upperRight().y()-simulation.getMap().getCurrentBounds().lowerLeft().y();
+
         freeSpaces.add((double) (width*height-simulation.getMap().getElements().size()));
     }
 

@@ -125,7 +125,7 @@ public class SimulationPresenter implements MapChangeListener {
 
             grassFieldsLabel.setText("Grass fields: " + displaySimulation.getSimulationStatistics().getGrassesCnt().getLast());
 
-            unoccupiedFieldsLabel.setText("UnoUnoccupied fields: " + displaySimulation.getSimulationStatistics().getFreeSpaces().getLast());
+            unoccupiedFieldsLabel.setText("Unoccupied fields: " + displaySimulation.getSimulationStatistics().getFreeSpaces().getLast());
 
             avgLifeSpanLabel.setText("Avg life span: " + displaySimulation.getSimulationStatistics().getAvgLifespan().getLast());
 
@@ -133,18 +133,19 @@ public class SimulationPresenter implements MapChangeListener {
 
             avgChildrenCntLabel.setText("Avg children cnt: " + displaySimulation.getSimulationStatistics().getAvgChildrenCnt().getLast());
 
-            firstGenome.setText("• " + bestGenes.get(0));
 
-            secondGenome.setText("• " + bestGenes.get(1));
+            firstGenome.setText("• " + (!bestGenes.isEmpty() ? bestGenes.get(0) : ""));
 
-            thirdGenome.setText("• " + bestGenes.get(2));
+            secondGenome.setText("• " + (bestGenes.size() > 1 ? bestGenes.get(1) : ""));
+
+            thirdGenome.setText("• " + (bestGenes.size() > 2 ? bestGenes.get(2) : ""));
 
             updateChart();
         });
     }
 
     public void startSimulation(SimulationParameters parameters) {
-        worldMap = new WorldMap(parameters.mapWidth(), parameters.mapHeight(), parameters.initialGrassAmount());
+        worldMap = new WorldMap(parameters);
         worldMap.subscribe(this);
 
         displaySimulation = new Simulation(worldMap, parameters);

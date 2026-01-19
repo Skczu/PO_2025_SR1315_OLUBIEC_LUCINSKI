@@ -1,6 +1,8 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.enums.SimulationParameters;
 import agh.ics.oop.model.exceptions.IncorrectPositionException;
+import agh.ics.oop.model.util.GenomeGenerator;
 import agh.ics.oop.model.util.RandomPositionGenerator;
 import javafx.util.Pair;
 
@@ -8,22 +10,20 @@ import java.util.*;
 
 public class WorldMap implements MoveValidator {
     private final Boundary mapBounds;
-    private final Map<Vector2d, Animal> animals = new HashMap<>();
+    private final Map<Vector2d, List<Animal>> animals = new HashMap<>();
     private final Map<Vector2d, Grass> grasses = new HashMap<>();
     private final ArrayList<MapChangeListener> listeners = new ArrayList<>();
     private final UUID mapId = UUID.randomUUID();
+    private final SimulationParameters parameters;
 
-    public WorldMap(int mapWidth, int mapHeight, int grassCount) {
-        mapBounds = new Boundary(new Vector2d(0, 0), new Vector2d(mapWidth - 1, mapHeight - 1));
+    public WorldMap(SimulationParameters parameters) {
+        mapBounds = new Boundary(new Vector2d(0, 0), new Vector2d(parameters.mapWidth() - 1, parameters.mapHeight() - 1));
+        this.parameters = parameters;
 
-        RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(mapWidth - 1, mapHeight - 1, grassCount);
-        for(Vector2d grassPosition : randomPositionGenerator) {
+        RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(parameters.mapWidth() - 1, parameters.mapHeight() - 1, parameters.initialGrassAmount());
+        for (Vector2d grassPosition : randomPositionGenerator) {
             grasses.put(grassPosition, new Grass(grassPosition));
         }
-    }
-
-    public Map<Vector2d, Animal> getAnimals() { //for testing purposes
-        return animals;
     }
 
     public Map<Vector2d, Grass> getGrasses() {
@@ -37,7 +37,7 @@ public class WorldMap implements MoveValidator {
     public List<WorldElement> getElements(){
         List<WorldElement> grassAndAnimals = new ArrayList<>(grasses.values());
 
-        grassAndAnimals.addAll(animals.values());
+        grassAndAnimals.addAll(animals.values().stream().map((List<Animal> animalsOnField) -> animalsOnField.isEmpty() ? null : animalsOnField.getFirst()).filter(Objects::nonNull).toList());
 
         return grassAndAnimals;
     }
@@ -47,8 +47,8 @@ public class WorldMap implements MoveValidator {
     }
 
     public WorldElement objectAt(Vector2d position){
-        if (animals.get(position) != null) {
-            return animals.get(position);
+        if (animals.containsKey(position) && !animals.get(position).isEmpty()) {
+            return animals.get(position).getFirst();
         }
 
         return grasses.get(position);
@@ -56,10 +56,6 @@ public class WorldMap implements MoveValidator {
 
     public boolean isOccupied(Vector2d position) {
         return objectAt(position) != null;
-    }
-
-    public boolean canMoveTo(Vector2d position) {
-        return !animals.containsKey(position);
     }
 
     @Override
@@ -82,21 +78,95 @@ public class WorldMap implements MoveValidator {
     }
 
     public void place(Animal animal) throws IncorrectPositionException {
-        if (canMoveTo(animal.getPosition())){ //places animal only on valid unoccupied positions
-            animals.put(animal.getPosition(),animal);
-            mapChanged("New animal was placed at: " + animal.getPosition()); //notifies for placing
-        } else{
-            throw new IncorrectPositionException(animal.getPosition());
+        if (!animals.containsKey(animal.getPosition())) {
+            animals.put(animal.getPosition(), new ArrayList<>());
         }
+
+        animals.get(animal.getPosition()).add(animal);
+        mapChanged("New animal was placed at: " + animal.getPosition()); //notifies for placing
     }
 
     public void move(Animal animal) {
         Vector2d posBeforeMove = animal.getPosition();
+        List<Animal> fieldBeforeMove = animals.get(posBeforeMove);
 
-        if (animals.get(posBeforeMove) == animal) { //checks if passed animal is on our map
-            animals.remove(posBeforeMove);
+        if (fieldBeforeMove.contains(animal)) { //checks if passed animal is on our map
+            fieldBeforeMove.remove(animal);
+
             animal.move(this);
-            animals.put(animal.getPosition(), animal);
+            animal.useEnergy(parameters.dailyEnergyLoss());
+
+            if (!animals.containsKey(animal.getPosition())) {
+                animals.put(animal.getPosition(), new ArrayList<>());
+            }
+
+            animals.get(animal.getPosition()).add(animal);
         }
+    }
+
+    public List<Animal> removeDeadAnimals() {
+        List<Animal> deadAnimals = new ArrayList<>();
+
+        for (Vector2d field : animals.keySet()) {
+            List<Animal> animalsOnField = animals.get(field);
+            List<Animal> deadAnimalsOnField = new ArrayList<>();
+
+            for (Animal animal : animalsOnField) {
+                if (animal.getEnergy() <= 0) {
+                    deadAnimalsOnField.add(animal);
+                }
+            }
+
+            animalsOnField.removeAll(deadAnimalsOnField);
+            deadAnimals.addAll(deadAnimalsOnField);
+        }
+
+        return deadAnimals;
+    }
+
+    public void consumeGrass() {
+        List<Vector2d> consumedFields = new ArrayList<>();
+
+        for (Vector2d field : grasses.keySet()) {
+            if (!animals.containsKey(field) || animals.get(field).isEmpty()) continue;
+
+            Animal chosenAnimal = animals.get(field).stream().sorted().toList().getFirst();
+
+            chosenAnimal.eat(grasses.get(field), parameters.grassEnergy());
+            consumedFields.add(field);
+        }
+
+        for (Vector2d field : consumedFields) {
+            grasses.remove(field);
+        }
+    }
+
+    public List<Animal> copulate() {
+        GenomeGenerator genomeGenerator = new GenomeGenerator(parameters.genomeLength());
+        List<Animal> newbornAnimals = new ArrayList<>();
+
+        for (Vector2d field : animals.keySet()) {
+            List<Animal> animalsOnField = animals.get(field);
+
+            if (animalsOnField.isEmpty()) continue;
+
+            List<Animal> animalsToCopulate = animalsOnField.stream().filter(animal -> animal.getEnergy() > parameters.reproductionReadyEnergy()).sorted().limit(2).toList();
+
+            if (animalsToCopulate.size() < 2) continue;
+
+            Animal strongerParent = animalsToCopulate.get(0);
+            Animal weakerParent = animalsToCopulate.get(1);
+
+            List<Integer> newGenome = genomeGenerator.generateGenome(strongerParent, weakerParent);
+
+            Animal newborn = new Animal(field, newGenome, parameters.initialAnimalEnergy());
+
+            newbornAnimals.add(newborn);
+
+            strongerParent.hasReproduced(parameters.copulationEnergyLoss());
+            weakerParent.hasReproduced(parameters.copulationEnergyLoss());
+        }
+
+        return newbornAnimals;
     }
 }

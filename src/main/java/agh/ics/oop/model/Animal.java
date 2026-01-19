@@ -5,7 +5,7 @@ import javafx.util.Pair;
 import java.util.Comparator;
 import java.util.List;
 
-public class Animal implements WorldElement , Comparable<Animal> {
+public class Animal implements WorldElement, Comparable<Animal> {
 
     private MapDirection currentOrientation;
 
@@ -67,22 +67,21 @@ public class Animal implements WorldElement , Comparable<Animal> {
         usingGene = (usingGene + 1) % genes.size();
     }
 
-    public void copulate(int consumedEnergy){
-        energy-=consumedEnergy;
-        childrenCnt+=1;
+    public void hasReproduced(int consumedEnergy){
+        energy -= consumedEnergy;
+        childrenCnt += 1;
     }
 
     public void eat(Grass grass,int grassEnergy){
-        if (grass.getPosition()==mapPosition){
-            energy+=grassEnergy;
+        if (grass.getPosition().equals(mapPosition)){
+            energy += grassEnergy;
         }
     }
 
     public void useEnergy(int dailyConsumption){
-        energy-=dailyConsumption;
-        age+=1;
+        energy -= dailyConsumption;
+        age += 1;
     }
-
 
     @Override
     public int compareTo(Animal other) {

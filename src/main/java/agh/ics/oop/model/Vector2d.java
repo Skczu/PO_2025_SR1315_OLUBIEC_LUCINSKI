@@ -34,14 +34,4 @@ public record Vector2d(int x, int y) {
     public Vector2d opposite() {
         return new Vector2d(-x, -y);
     }
-
-    @Override
-    public boolean equals(Object other) {
-        if (this == other) //check if points to the same object
-            return true;
-        if (!(other instanceof Vector2d that)) //check if object is of the same class
-            return false;
-        return x == that.x && y == that.y; //compares values
-    }
-
 }
