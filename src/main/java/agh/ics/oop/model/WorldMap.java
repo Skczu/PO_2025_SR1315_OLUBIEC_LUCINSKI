@@ -3,7 +3,6 @@ package agh.ics.oop.model;
 import agh.ics.oop.model.enums.SimulationParameters;
 import agh.ics.oop.model.exceptions.IncorrectPositionException;
 import agh.ics.oop.model.util.GenomeGenerator;
-import agh.ics.oop.model.util.RandomPositionGenerator;
 import agh.ics.oop.model.util.RandomGrassGenerator;
 import javafx.util.Pair;
 
@@ -31,6 +30,10 @@ public class WorldMap implements MoveValidator {
         return grasses;
     }
 
+    public List<Vector2d> getAnimalFields() {
+        return animals.keySet().stream().filter(field -> !animals.get(field).isEmpty()).toList();
+    }
+
     public UUID getId(){
         return mapId;
     }
@@ -39,6 +42,7 @@ public class WorldMap implements MoveValidator {
         return jungleBounds;
     }
 
+    // TODO remove or use in testing
     public List<WorldElement> getElements(){
         List<WorldElement> grassAndAnimals = new ArrayList<>(grasses.values());
 
@@ -93,9 +97,9 @@ public class WorldMap implements MoveValidator {
         listeners.remove(listener);
     }
 
-    public void mapChanged(String message){
+    public void mapChanged(){
         for (MapChangeListener listener : listeners){
-            listener.mapChanged(this, message);
+            listener.mapChanged(this);
         }
     }
 
@@ -105,7 +109,7 @@ public class WorldMap implements MoveValidator {
         }
 
         animals.get(animal.getPosition()).add(animal);
-        mapChanged("New animal was placed at: " + animal.getPosition()); //notifies for placing
+        mapChanged(); //notifies for placing
     }
 
     public void move(Animal animal) {

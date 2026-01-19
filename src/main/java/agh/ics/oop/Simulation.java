@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class Simulation implements Runnable {
-    private List<Animal> animals = new ArrayList<>();
+    private final List<Animal> animals = new ArrayList<>();
     private final List<Animal> deadAnimals = new ArrayList<>(); //for statistics purposes
     private final WorldMap map;
     private boolean paused = false;
@@ -72,15 +72,14 @@ public class Simulation implements Runnable {
 
     @Override
     public void run() {
-        // initial, single-time pause to let the user see the map before the simulation runs
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            System.out.println(e.getStackTrace());
-        }
-
         // MAIN DAY LOOP
         while (true) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                System.out.println(e.getStackTrace());
+            }
+
             handlePause();
 
             removeDeadAnimals();
@@ -94,7 +93,7 @@ public class Simulation implements Runnable {
             copulate();
 
             // TODO we have access to all simulation & map info here, so we can easily draw simulation stats
-            map.mapChanged("a day has passed");
+            map.mapChanged();
 
             simulationStatistics.update(); //update statistics every day
             try {
@@ -115,18 +114,6 @@ public class Simulation implements Runnable {
     private void simulateMovement() {
         for (Animal animal : animals) {
             map.move(animal);
-        }
-
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            System.out.println(e.getStackTrace());
-        }
-    }
-
-    public void consumeEnergy(){
-        for (Animal animal : animals) {
-            animal.useEnergy(parameters.dailyEnergyLoss());
         }
     }
 

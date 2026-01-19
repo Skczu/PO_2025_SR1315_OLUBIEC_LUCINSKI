@@ -32,9 +32,6 @@ public class SimulationPresenter implements MapChangeListener {
     private Button togglePauseButton;
 
     @FXML
-    private Label moveInfoLabel;
-
-    @FXML
     private Canvas mapGrid;
 
     //statistics labels
@@ -110,11 +107,9 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     @Override
-    public void mapChanged(WorldMap worldMap, String message) {
+    public void mapChanged(WorldMap worldMap) {
         Platform.runLater(() -> {
             drawMap(worldMap);
-            moveInfoLabel.setText(message);
-
             //set statistics
 
             List<List<Integer>> bestGenes = displaySimulation.getSimulationStatistics().getMostCommonGenomes(3);
@@ -281,7 +276,7 @@ public class SimulationPresenter implements MapChangeListener {
 
     private Color animalColor(Animal animal){
         double energyPercent = Math.min(((double) animal.getEnergy())/displaySimulation.getParameters().reproductionReadyEnergy(),1);
-        return Color.hsb(120*energyPercent,1,0.75);
+        return Color.hsb(100*energyPercent,1,0.75);
     }
 
     private void scaleMap(){

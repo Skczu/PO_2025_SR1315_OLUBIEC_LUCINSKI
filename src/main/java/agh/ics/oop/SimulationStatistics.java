@@ -33,10 +33,10 @@ public class SimulationStatistics {
 
     private void addFreeSpaces(){
         //TODO should work after changing getElements to display only first animal on given position
-        int width = simulation.getMap().getCurrentBounds().upperRight().x()-simulation.getMap().getCurrentBounds().lowerLeft().x();
-        int height = simulation.getMap().getCurrentBounds().upperRight().y()-simulation.getMap().getCurrentBounds().lowerLeft().y();
+        int width = simulation.getParameters().mapWidth();
+        int height = simulation.getParameters().mapHeight();
 
-        freeSpaces.add((double) (width*height-simulation.getMap().getElements().size()));
+        freeSpaces.add((double) (width*height-simulation.getMap().getAnimalFields().size()));
     }
 
     public List<List<Integer>> getMostCommonGenomes(int limit) {
@@ -52,24 +52,24 @@ public class SimulationStatistics {
     }
 
     private void addAvgEnergy(){
-        avgEnergy.add( simulation.getAnimals().stream()
+        avgEnergy.add( (double) Math.round(simulation.getAnimals().stream()
                 .mapToInt(Animal::getEnergy)
                 .average()
-                .orElse(0.0));
+                .orElse(0.0) * 100 ) / 100);
     }
 
     private void addAvgChildrenCnt(){
-        avgChildrenCnt.add( simulation.getAnimals().stream()
+        avgChildrenCnt.add( (double) Math.round(simulation.getAnimals().stream()
                 .mapToInt(Animal::getChildrenCnt)
                 .average()
-                .orElse(0.0));
+                .orElse(0.0) * 100) / 100);
     }
 
     private void addAvgLifespan(){
-        avgLifespan.add( simulation.getDeadAnimals().stream()
+        avgLifespan.add((double)  Math.round(simulation.getDeadAnimals().stream()
                 .mapToInt(Animal::getAge)
                 .average()
-                .orElse(0.0));
+                .orElse(0.0) * 100) / 100);
     }
 
     public void update(){
