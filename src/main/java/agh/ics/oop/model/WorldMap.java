@@ -186,6 +186,7 @@ public class WorldMap implements MoveValidator {
             List<Integer> newGenome = genomeGenerator.generateGenome(strongerParent, weakerParent);
 
             Animal newborn = new Animal(field, newGenome, parameters.initialAnimalEnergy());
+            animals.get(field).add(newborn); //adding newborn to map
 
             newbornAnimals.add(newborn);
 
