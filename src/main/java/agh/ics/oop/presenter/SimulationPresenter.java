@@ -15,6 +15,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 
 import java.util.ArrayList;
@@ -82,13 +83,9 @@ public class SimulationPresenter implements MapChangeListener {
     @FXML
     private LineChart<Integer,Double> statsChart;
 
-    final static int CELL_WIDTH = 50;
-    static final int BORDER_WIDTH = 2;
-    static final int BORDER_OFFSET = BORDER_WIDTH / 2;
-
-    public void setMap(WorldMap worldMap) {
-        this.worldMap = worldMap;
-    }
+     private int cellWidth = 27;
+     private double borderWidth = 1;
+     private double borderOffest = borderWidth / 2;
 
     public void onPauseToggle() {
         boolean isPaused = displaySimulation.togglePause();
@@ -98,14 +95,15 @@ public class SimulationPresenter implements MapChangeListener {
 
     private void drawMap(WorldMap worldMap){
         Boundary boundary = worldMap.getCurrentBounds();
+
+        mapGrid.setWidth((boundary.upperRight().x()-boundary.lowerLeft().x()+2)* cellWidth + borderOffest);
+        mapGrid.setHeight((boundary.upperRight().y()-boundary.lowerLeft().y()+2)* cellWidth + borderOffest);
         clearGrid();
 
-        mapGrid.setWidth((boundary.upperRight().x()-boundary.lowerLeft().x()+2)*CELL_WIDTH+BORDER_OFFSET);
-        mapGrid.setHeight((boundary.upperRight().y()-boundary.lowerLeft().y()+2)*CELL_WIDTH+BORDER_OFFSET);
-
         GraphicsContext graphics = mapGrid.getGraphicsContext2D();
-        configureFont(graphics,(int) (CELL_WIDTH*0.5),Color.BLACK);
-        drawFrame(graphics,BORDER_WIDTH,Color.BLUE);
+        drawJungle(graphics);
+        configureFont(graphics,(int) (cellWidth *0.5),Color.BLACK);
+        drawFrame(graphics, borderWidth,Color.TAN);
 
         drawHeader(graphics,boundary);
         drawEntities(graphics,boundary);
@@ -160,19 +158,31 @@ public class SimulationPresenter implements MapChangeListener {
         handleChoice(value);
         statsChart.setCreateSymbols(false);
 
+        //scaling the map
+        scaleMap();
+
         new Thread(displaySimulation).start();
     }
 
     private void clearGrid() {
         GraphicsContext graphics = mapGrid.getGraphicsContext2D();
-        graphics.setFill(Color.WHITE);
+        graphics.setFill(Color.rgb(255,236,201));
         graphics.fillRect(0, 0, mapGrid.getWidth(), mapGrid.getHeight());
+    }
+
+    private void drawJungle(GraphicsContext graphics){
+        Vector2d lowerCorner = displaySimulation.getMap().getJungleBounds().lowerLeft();
+        Vector2d upperCorner = displaySimulation.getMap().getJungleBounds().upperRight();
+        int jungleHeight = (upperCorner.y()-lowerCorner.y()+1);
+
+        graphics.setFill(Color.rgb(177,255,157));
+        graphics.fillRect(0, (lowerCorner.y()+1) * cellWidth, mapGrid.getWidth(), jungleHeight * cellWidth);
     }
 
     private void configureFont(GraphicsContext graphics, int size, Color color) {
         graphics.setTextAlign(TextAlignment.CENTER);
         graphics.setTextBaseline(VPos.CENTER);
-        graphics.setFont(new Font("Arial", size));
+        graphics.setFont(Font.font("Arial", FontWeight.BOLD, size));
         graphics.setFill(color);
     }
 
@@ -181,29 +191,29 @@ public class SimulationPresenter implements MapChangeListener {
         graphics.setLineWidth(lineWitdh);
         graphics.strokeRect(lineWitdh/2,lineWitdh/2,mapGrid.getWidth()-lineWitdh, mapGrid.getHeight()-lineWitdh);
 
-        for (int x = 0; x < mapGrid.getWidth() + 1; x += CELL_WIDTH) {
-            graphics.strokeLine(x + BORDER_OFFSET, 0, x + BORDER_OFFSET, mapGrid.getHeight());  // BORDER_OFFSET = BORDER_WIDTH / 2
+        for (int x = 0; x < mapGrid.getWidth() + 1; x += cellWidth) {
+            graphics.strokeLine(x + borderOffest, 0, x + borderOffest, mapGrid.getHeight());  // BORDER_OFFSET = BORDER_WIDTH / 2
         }
-        for (int y = 0; y < mapGrid.getHeight() + 1; y += CELL_WIDTH) {
-            graphics.strokeLine(0, y+BORDER_OFFSET, mapGrid.getWidth(), y+BORDER_OFFSET);
+        for (int y = 0; y < mapGrid.getHeight() + 1; y += cellWidth) {
+            graphics.strokeLine(0, y+ borderOffest, mapGrid.getWidth(), y+ borderOffest);
         }
     }
 
     private void drawHeader(GraphicsContext graphics, Boundary boundary){
         //draw y\\x
-        graphics.fillText("y\\x",CELL_WIDTH/2+BORDER_OFFSET,CELL_WIDTH/2+BORDER_OFFSET);
+        graphics.fillText("y\\x", cellWidth /2+ borderOffest, cellWidth /2+ borderOffest);
 
         //draws starting from upper left map corner
         int srartX =boundary.lowerLeft().x();
         //draw column headers
-        for (double x = CELL_WIDTH+BORDER_OFFSET; x < mapGrid.getWidth(); x +=CELL_WIDTH) {
-            graphics.fillText(String.valueOf(srartX++), x + CELL_WIDTH/2,CELL_WIDTH/2+BORDER_OFFSET);
+        for (double x = cellWidth + borderOffest; x < mapGrid.getWidth(); x += cellWidth) {
+            graphics.fillText(String.valueOf(srartX++), x + cellWidth /2, cellWidth /2+ borderOffest);
         }
 
         int startY=boundary.upperRight().y();
         //row headers
-        for (double y = CELL_WIDTH+BORDER_OFFSET; y < mapGrid.getHeight(); y +=CELL_WIDTH) {
-            graphics.fillText(String.valueOf(startY--),CELL_WIDTH/2+BORDER_OFFSET, y + CELL_WIDTH/2);
+        for (double y = cellWidth + borderOffest; y < mapGrid.getHeight(); y += cellWidth) {
+            graphics.fillText(String.valueOf(startY--), cellWidth /2+ borderOffest, y + cellWidth /2);
         }
     }
 
@@ -214,15 +224,22 @@ public class SimulationPresenter implements MapChangeListener {
         int startY = boundary.upperRight().y(); //simulated map object Y position
         Vector2d position = new Vector2d(startX, startY);
 
-        for (double y = CELL_WIDTH+BORDER_OFFSET; y < mapGrid.getHeight() ; y +=CELL_WIDTH) {
+        for (double y = cellWidth + borderOffest; y < mapGrid.getHeight() ; y += cellWidth) {
 
             position = new Vector2d(startX, position.y());
 
-            for (double x = CELL_WIDTH+BORDER_OFFSET; x < mapGrid.getWidth() ; x +=CELL_WIDTH) {
+            for (double x = cellWidth + borderOffest; x < mapGrid.getWidth() ; x += cellWidth) {
                 if (worldMap.isOccupied(position)) {
                     Object object = worldMap.objectAt(position);
                     if (object!=null){
-                        graphics.fillText(object.toString(),x+CELL_WIDTH/2, y+CELL_WIDTH/2);
+                        if (object.getClass().equals(Animal.class)){
+                            graphics.setFill(animalColor((Animal) object)); //set animal color according to its energy
+                        }
+                        else{
+                            graphics.setFill(Color.GREEN); //for drawing grass;
+                        }
+                        graphics.fillText(object.toString(),x+ cellWidth /2, y+ cellWidth /2);
+                        graphics.setFill(Color.BLACK); //reset to default black font
                     }
                 }
                 position = position.add(new Vector2d(1,0));
@@ -260,5 +277,27 @@ public class SimulationPresenter implements MapChangeListener {
             );
         }
         statsChart.getData().add(series);
+    }
+
+    private Color animalColor(Animal animal){
+        double energyPercent = Math.min(((double) animal.getEnergy())/displaySimulation.getParameters().reproductionReadyEnergy(),1);
+        return Color.hsb(120*energyPercent,1,0.75);
+    }
+
+    private void scaleMap(){
+        int largestDimension = Math.max(displaySimulation.getParameters().mapWidth(),displaySimulation.getParameters().mapHeight());
+        //calculate displayed size from 10 to 50
+
+        //edge case for sizes like 1,2,3
+        if(largestDimension<3){
+            cellWidth=200;
+            borderWidth=10;
+            borderOffest = borderWidth / 2;
+            return;
+        }
+
+        cellWidth = (int) (425/Math.pow(largestDimension,0.9));
+        borderWidth =20.0/Math.pow(largestDimension,0.9);
+        borderOffest = borderWidth / 2;
     }
 }

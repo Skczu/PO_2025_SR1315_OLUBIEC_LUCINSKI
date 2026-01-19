@@ -9,7 +9,7 @@ import java.util.List;
 
 public class RandomPositionGenerator implements Iterable<Vector2d> {
     List<Vector2d> possiblePositions = new ArrayList<>();
-    List<Vector2d> enrolledGrassPositions = new ArrayList<>();
+    List<Vector2d> enrolledPositions = new ArrayList<>();
 
     public RandomPositionGenerator(int maxWidth, int maxHeight, int grassCount) {
         //simplest method - generate a list of all possible positions and shuffle them
@@ -22,12 +22,12 @@ public class RandomPositionGenerator implements Iterable<Vector2d> {
         Collections.shuffle(possiblePositions);
 
         for (int i = 0; i < grassCount; i++) {
-            enrolledGrassPositions.add(possiblePositions.get(i));
+            enrolledPositions.add(possiblePositions.get(i));
         }
     }
 
     @Override
     public Iterator<Vector2d> iterator() {
-        return enrolledGrassPositions.iterator();
+        return enrolledPositions.iterator();
     }
 }

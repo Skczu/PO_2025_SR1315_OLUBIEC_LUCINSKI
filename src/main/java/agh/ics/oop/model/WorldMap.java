@@ -4,6 +4,7 @@ import agh.ics.oop.model.enums.SimulationParameters;
 import agh.ics.oop.model.exceptions.IncorrectPositionException;
 import agh.ics.oop.model.util.GenomeGenerator;
 import agh.ics.oop.model.util.RandomPositionGenerator;
+import agh.ics.oop.model.util.RandomGrassGenerator;
 import javafx.util.Pair;
 
 import java.util.*;
@@ -11,19 +12,19 @@ import java.util.*;
 public class WorldMap implements MoveValidator {
     private final Boundary mapBounds;
     private final Map<Vector2d, List<Animal>> animals = new HashMap<>();
+    private final Boundary jungleBounds;
     private final Map<Vector2d, Grass> grasses = new HashMap<>();
     private final ArrayList<MapChangeListener> listeners = new ArrayList<>();
     private final UUID mapId = UUID.randomUUID();
     private final SimulationParameters parameters;
 
     public WorldMap(SimulationParameters parameters) {
-        mapBounds = new Boundary(new Vector2d(0, 0), new Vector2d(parameters.mapWidth() - 1, parameters.mapHeight() - 1));
         this.parameters = parameters;
 
-        RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(parameters.mapWidth() - 1, parameters.mapHeight() - 1, parameters.initialGrassAmount());
-        for (Vector2d grassPosition : randomPositionGenerator) {
-            grasses.put(grassPosition, new Grass(grassPosition));
-        }
+        mapBounds = new Boundary(new Vector2d(0, 0), new Vector2d(parameters.mapWidth() - 1, parameters.mapHeight() - 1));
+        jungleBounds = calculateJungle(parameters.mapWidth(), parameters.mapHeight());
+
+        growGrass(parameters.initialGrassAmount());
     }
 
     public Map<Vector2d, Grass> getGrasses() {
@@ -32,6 +33,10 @@ public class WorldMap implements MoveValidator {
 
     public UUID getId(){
         return mapId;
+    }
+
+    public Boundary getJungleBounds() {
+        return jungleBounds;
     }
 
     public List<WorldElement> getElements(){
@@ -74,7 +79,7 @@ public class WorldMap implements MoveValidator {
 
         //validated new position for crazy cases like 1x1 map
         if(!newPosition.precedes(mapBounds.upperRight()) || !newPosition.follows(mapBounds.lowerLeft())){
-            return new Pair<>(facing, newPosition);
+            return new Pair<>(facing, position);
         }
 
         return new Pair<>(facing, newPosition);
@@ -185,5 +190,23 @@ public class WorldMap implements MoveValidator {
         }
 
         return newbornAnimals;
+    }
+
+    private Boundary calculateJungle(int width, int height) {
+
+        int jungleHeight = Math.max(1, (int) Math.round( height * 0.2));
+        int yStart = (height - jungleHeight) / 2;
+
+        return new Boundary(
+                new Vector2d(0, yStart),
+                new Vector2d(width-1, yStart + jungleHeight - 1)
+        );
+    }
+
+    public void growGrass(int grassCnt){
+        RandomGrassGenerator generator = new RandomGrassGenerator(mapBounds,jungleBounds,grassCnt,new HashSet<>(grasses.keySet()));
+        for (Vector2d newPos : generator){
+            grasses.put(newPos,new Grass(newPos));
+        }
     }
 }
