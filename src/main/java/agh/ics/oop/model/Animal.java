@@ -6,9 +6,6 @@ import java.util.Comparator;
 import java.util.List;
 
 public class Animal implements WorldElement, Comparable<Animal> {
-
-    static final int MINIMAL_FAST_ENERGY=20;
-
     private MapDirection currentOrientation;
 
     private Vector2d mapPosition;
@@ -33,21 +30,11 @@ public class Animal implements WorldElement, Comparable<Animal> {
         this.childrenCnt = 0;
         this.genes = genes;
         this.energy = startEnergy;
-        this.speed=1;
+        this.speed = 1;
     }
 
     @Override
-    public Vector2d getPosition() {
-        return mapPosition;
-    }
-
-    //getter for checking orientation in tests
-    public MapDirection getCurrentOrientation() {
-        return currentOrientation;
-    }
-
-    @Override
-    public String toString() { //returns only schematic animal position ex. N for NORTH
+    public String toString() {
         return currentOrientation.toString();
     }
 
@@ -57,7 +44,6 @@ public class Animal implements WorldElement, Comparable<Animal> {
     }
 
     public void move(MoveValidator moveValidator){
-        //position after move
         currentOrientation = currentOrientation.rotate(genes.get(usingGene));
 
         Pair<MapDirection,Vector2d> newPosition = moveValidator.positionAfterMove(currentOrientation,mapPosition);
@@ -66,6 +52,13 @@ public class Animal implements WorldElement, Comparable<Animal> {
         mapPosition = newPosition.getValue();
 
         usingGene = (usingGene + 1) % genes.size();
+    }
+
+    public void moveExtra(MoveValidator moveValidator) {
+        Pair<MapDirection,Vector2d> newPosition = moveValidator.positionAfterMove(currentOrientation,mapPosition);
+
+        currentOrientation = newPosition.getKey();
+        mapPosition = newPosition.getValue();
     }
 
     public void hasReproduced(int consumedEnergy){
@@ -84,9 +77,11 @@ public class Animal implements WorldElement, Comparable<Animal> {
         age += 1;
     }
 
-    public void setSpeed(){
-        if(energy>MINIMAL_FAST_ENERGY){
-            speed=1+MINIMAL_FAST_ENERGY-energy;
+    public void setSpeed(int fastAnimalsEnergyThreshold, int fastAnimalsSpeedIncreaseThreshold, int fastAnimalsMaxSpeed){
+        if (energy >= fastAnimalsMaxSpeed) return;
+
+        if (energy > fastAnimalsEnergyThreshold) {
+            speed = 1 + (energy - fastAnimalsEnergyThreshold + 1) / fastAnimalsSpeedIncreaseThreshold;
         }
     }
 
@@ -97,6 +92,15 @@ public class Animal implements WorldElement, Comparable<Animal> {
                 .thenComparingInt(a -> a.age).reversed()
                 .thenComparingInt(a -> a.childrenCnt).reversed()
                 .compare(this, other);
+    }
+
+    @Override
+    public Vector2d getPosition() {
+        return mapPosition;
+    }
+
+    public MapDirection getCurrentOrientation() {
+        return currentOrientation;
     }
 
     public List<Integer> getGenes() {
@@ -113,5 +117,9 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
     public int getEnergy(){
         return energy;
+    }
+
+    public int getSpeed() {
+        return speed;
     }
 }

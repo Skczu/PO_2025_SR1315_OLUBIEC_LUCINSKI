@@ -27,7 +27,6 @@ public class Simulation implements Runnable {
         Vector2d topRightCorner = map.getCurrentBounds().upperRight();
         RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(topRightCorner.x(), topRightCorner.y(), parameters.initialAnimalAmount());
 
-        //changed to correspond with simulationParameters
         List<Integer> generatedGenes = new ArrayList<>();
         for (int i = 0; i < parameters.genomeLength(); i++) {
             generatedGenes.add(i);
@@ -45,12 +44,44 @@ public class Simulation implements Runnable {
                 e.printStackTrace();
             }
         }
+
         simulationStatistics = new SimulationStatistics(this);
-        simulationStatistics.update(); //first update for initial data
+        simulationStatistics.update();
 
         exporter = new StatisticsExporter(simulationStatistics, this.map.getId());
     }
 
+    @Override
+    public void run() {
+        while (true) {
+            waitDay();
+
+            handlePause();
+
+            removeDeadAnimals();
+
+            if (parameters.isFastAnimals()) {
+                simulateFastAnimalsMovement();
+            } else {
+                simulateMovement();
+            }
+
+            consumeGrass();
+
+            map.growGrass(parameters.dailyGrassGrowth());
+
+            copulate();
+
+            map.mapChanged();
+
+            simulationStatistics.update();
+            try {
+                exporter.export();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public synchronized boolean togglePause() {
         paused = !paused;
@@ -70,37 +101,11 @@ public class Simulation implements Runnable {
         }
     }
 
-    @Override
-    public void run() {
-        // MAIN DAY LOOP
-        while (true) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                System.out.println(e.getStackTrace());
-            }
-
-            handlePause();
-
-            removeDeadAnimals();
-
-            simulateMovement();
-
-            consumeGrass();
-
-            map.growGrass(parameters.dailyGrassGrowth());
-
-            copulate();
-
-            // TODO we have access to all simulation & map info here, so we can easily draw simulation stats
-            map.mapChanged();
-
-            simulationStatistics.update(); //update statistics every day
-            try {
-                exporter.export();  //try to export day data
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    private void waitDay() {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            System.out.println(e.getStackTrace());
         }
     }
 
@@ -114,6 +119,24 @@ public class Simulation implements Runnable {
     private void simulateMovement() {
         for (Animal animal : animals) {
             map.move(animal);
+        }
+    }
+
+    private void simulateFastAnimalsMovement() {
+        if (animals.isEmpty()) return;
+
+        for (Animal animal : animals) {
+            animal.setSpeed(parameters.fastAnimalsEnergyThreshold(), parameters.fastAnimalsSpeedIncreaseThreshold(), parameters.fastAnimalsMaxSpeed());
+
+            int speed = animal.getSpeed();
+
+            if (speed > 1) {
+                for (int i = 1; i <= speed; i++) {
+                    if (map.fastMove(animal, i)) break;
+                }
+            } else {
+                map.move(animal);
+            }
         }
     }
 

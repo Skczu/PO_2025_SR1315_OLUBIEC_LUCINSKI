@@ -62,6 +62,15 @@ public class MainPresenter {
     @FXML
     private Spinner<Integer> genomeLength;
 
+    @FXML
+    private Spinner<Integer> fastAnimalsEnergyThreshold;
+
+    @FXML
+    private Spinner<Integer> fastAnimalsSpeedIncreaseThreshold;
+
+    @FXML
+    private Spinner<Integer> fastAnimalsMaxSpeed;
+
 
     public void onSimulationStartClicked() {
         invalidMovesMessage.setText("");
@@ -80,7 +89,10 @@ public class MainPresenter {
                 grassEnergy.getValue(),
                 minimumMutationAmount.getValue(),
                 maximumMutationAmount.getValue(),
-                genomeLength.getValue()
+                genomeLength.getValue(),
+                fastAnimalsEnergyThreshold.getValue(),
+                fastAnimalsSpeedIncreaseThreshold.getValue(),
+                fastAnimalsMaxSpeed.getValue()
         );
 
         try {

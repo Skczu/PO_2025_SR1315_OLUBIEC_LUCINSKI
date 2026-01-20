@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane minHeight="500.0" minWidth="850.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.MainPresenter">
+<BorderPane minHeight="500.0" minWidth="900.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.MainPresenter">
     <center>
         <VBox alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="100.0" spacing="15.0" BorderPane.alignment="CENTER">
             <children>
@@ -31,17 +31,17 @@
                                </Label>
                                <Label text="Initial animal energy">
                                    <graphic>
-                                       <Spinner fx:id="initialAnimalEnergy"  initialValue="5" max="1000" editable="true" prefHeight="15.0" prefWidth="90.0" />
+                                       <Spinner fx:id="initialAnimalEnergy"  initialValue="10" max="1000" editable="true" prefHeight="15.0" prefWidth="90.0" />
                                    </graphic>
                                </Label>
                                <Label text="Daily energy loss">
                                    <graphic>
-                                       <Spinner fx:id="dailyEnergyLoss"  initialValue="2" max="1000" editable="true" prefHeight="15.0" prefWidth="90.0" />
+                                       <Spinner fx:id="dailyEnergyLoss"  initialValue="1" max="1000" editable="true" prefHeight="15.0" prefWidth="90.0" />
                                    </graphic>
                                </Label>
                                <Label text="Reproduction ready energy">
                                    <graphic>
-                                       <Spinner fx:id="reproductionReadyEnergy"  initialValue="7" max="1000" editable="true" prefHeight="25.0" prefWidth="90.0" />
+                                       <Spinner fx:id="reproductionReadyEnergy"  initialValue="2" max="1000" editable="true" prefHeight="25.0" prefWidth="90.0" />
                                    </graphic>
                                </Label>
                                <Label text="Copulation energy loss">
@@ -57,23 +57,43 @@
                         <VBox>
                             <Label text="Initial grass amount">
                                 <graphic>
-                                    <Spinner fx:id="initialGrassAmount" initialValue="30" max="1000" editable="true" prefHeight="15.0" prefWidth="90.0" />
+                                    <Spinner fx:id="initialGrassAmount" initialValue="40" max="1000" editable="true" prefHeight="15.0" prefWidth="90.0" />
                                 </graphic>
                             </Label>
                             <Label text="Daily grass growth">
                                 <graphic>
-                                    <Spinner fx:id="dailyGrassGrowth" initialValue="10" max="1000" editable="true" prefHeight="15.0" prefWidth="90.0" />
+                                    <Spinner fx:id="dailyGrassGrowth" initialValue="15" max="1000" editable="true" prefHeight="15.0" prefWidth="90.0" />
                                 </graphic>
                             </Label>
                             <Label text="Grass energy">
                                 <graphic>
-                                    <Spinner fx:id="grassEnergy" initialValue="3" max="1000" editable="true" prefHeight="15.0" prefWidth="90.0" />
+                                    <Spinner fx:id="grassEnergy" initialValue="5" max="1000" editable="true" prefHeight="15.0" prefWidth="90.0" />
                                 </graphic>
                             </Label>
                         </VBox>
                      </content>
 
                   </TitledPane>
+
+                   <TitledPane animated="false" text="Fast Animals - variant">
+                       <VBox>
+                           <Label text="Speed activation threshold">
+                               <graphic>
+                                   <Spinner fx:id="fastAnimalsEnergyThreshold" initialValue="5" max="1000" editable="true" prefHeight="25.0" prefWidth="90.0" />
+                               </graphic>
+                           </Label>
+                           <Label text="Speed increase threshold">
+                               <graphic>
+                                   <Spinner fx:id="fastAnimalsSpeedIncreaseThreshold" initialValue="2" max="1000" editable="true" prefHeight="25.0" prefWidth="90.0" />
+                               </graphic>
+                           </Label>
+                           <Label text="Maximum speed">
+                               <graphic>
+                                   <Spinner fx:id="fastAnimalsMaxSpeed" initialValue="8" max="1000" editable="true" prefHeight="25.0" prefWidth="90.0" />
+                               </graphic>
+                           </Label>
+                       </VBox>
+                   </TitledPane>
                </children>
             </HBox>
 

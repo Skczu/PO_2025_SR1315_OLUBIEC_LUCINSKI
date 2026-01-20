@@ -14,5 +14,8 @@ public record SimulationParameters(
         int grassEnergy,
         int minMutationAmount,
         int maxMutationAmount,
-        int genomeLength
+        int genomeLength,
+        int fastAnimalsEnergyThreshold,
+        int fastAnimalsSpeedIncreaseThreshold,
+        int fastAnimalsMaxSpeed
 ) {}

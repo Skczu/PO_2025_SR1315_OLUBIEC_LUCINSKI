@@ -93,10 +93,6 @@ public class WorldMap implements MoveValidator {
         listeners.add(listener);
     }
 
-    public void unsubscribe(MapChangeListener listener) {
-        listeners.remove(listener);
-    }
-
     public void mapChanged(){
         for (MapChangeListener listener : listeners){
             listener.mapChanged(this);
@@ -109,14 +105,15 @@ public class WorldMap implements MoveValidator {
         }
 
         animals.get(animal.getPosition()).add(animal);
-        mapChanged(); //notifies for placing
+
+        mapChanged();
     }
 
     public void move(Animal animal) {
         Vector2d posBeforeMove = animal.getPosition();
         List<Animal> fieldBeforeMove = animals.get(posBeforeMove);
 
-        if (fieldBeforeMove.contains(animal)) { //checks if passed animal is on our map
+        if (fieldBeforeMove.contains(animal)) {
             fieldBeforeMove.remove(animal);
 
             animal.move(this);
@@ -128,6 +125,44 @@ public class WorldMap implements MoveValidator {
 
             animals.get(animal.getPosition()).add(animal);
         }
+    }
+
+    /**
+     * @return whether the animal crashed into another
+     */
+    public boolean fastMove(Animal animal, int step) {
+        Vector2d posBeforeMove = animal.getPosition();
+        List<Animal> fieldBeforeMove = animals.get(posBeforeMove);
+
+        if (fieldBeforeMove.contains(animal)) {
+            fieldBeforeMove.remove(animal);
+
+            if (step == 1) {
+                animal.move(this);
+            } else {
+                animal.moveExtra(this);
+            }
+
+            Vector2d field = animal.getPosition();
+
+            grasses.remove(field);
+
+            if (!animals.containsKey(field)) {
+                animals.put(field, new ArrayList<>());
+            }
+
+            animals.get(field).add(animal);
+
+            if (animals.get(field).size() > 1) {
+                animal.useEnergy(parameters.dailyEnergyLoss() * 2);
+
+                return true;
+            }
+
+            if (step == animal.getSpeed()) animal.useEnergy(parameters.dailyEnergyLoss());
+        }
+
+        return false;
     }
 
     public List<Animal> removeDeadAnimals() {
@@ -185,9 +220,9 @@ public class WorldMap implements MoveValidator {
 
             List<Integer> newGenome = genomeGenerator.generateGenome(strongerParent, weakerParent);
 
-            Animal newborn = new Animal(field, newGenome, parameters.initialAnimalEnergy());
-            animals.get(field).add(newborn); //adding newborn to map
+            Animal newborn = new Animal(field, newGenome, parameters.copulationEnergyLoss() * 2);
 
+            animalsOnField.add(newborn);
             newbornAnimals.add(newborn);
 
             strongerParent.hasReproduced(parameters.copulationEnergyLoss());

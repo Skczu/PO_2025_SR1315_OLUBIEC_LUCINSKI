@@ -196,19 +196,19 @@ public class SimulationPresenter implements MapChangeListener {
 
     private void drawHeader(GraphicsContext graphics, Boundary boundary){
         //draw y\\x
-        graphics.fillText("y\\x", cellWidth /2+ borderOffest, cellWidth /2+ borderOffest);
+        graphics.fillText("y\\x", (double) cellWidth /2+ borderOffest, (double) cellWidth /2+ borderOffest);
 
         //draws starting from upper left map corner
         int srartX =boundary.lowerLeft().x();
         //draw column headers
         for (double x = cellWidth + borderOffest; x < mapGrid.getWidth(); x += cellWidth) {
-            graphics.fillText(String.valueOf(srartX++), x + cellWidth /2, cellWidth /2+ borderOffest);
+            graphics.fillText(String.valueOf(srartX++), x + (double) cellWidth /2, (double) cellWidth /2+ borderOffest);
         }
 
         int startY=boundary.upperRight().y();
         //row headers
         for (double y = cellWidth + borderOffest; y < mapGrid.getHeight(); y += cellWidth) {
-            graphics.fillText(String.valueOf(startY--), cellWidth /2+ borderOffest, y + cellWidth /2);
+            graphics.fillText(String.valueOf(startY--), (double) cellWidth /2+ borderOffest, y + (double) cellWidth /2);
         }
     }
 
@@ -229,11 +229,16 @@ public class SimulationPresenter implements MapChangeListener {
                     if (object!=null){
                         if (object.getClass().equals(Animal.class)){
                             graphics.setFill(animalColor((Animal) object)); //set animal color according to its energy
+                            graphics.fillOval(x + (double) cellWidth / 4, y + (double) cellWidth / 4, (double) cellWidth / 2, (double) cellWidth / 2);
+
+                            graphics.setStroke(Color.BLACK);
+                            graphics.setLineWidth((double) cellWidth / 100);
+                            graphics.strokeOval(x + (double) cellWidth / 4, y + (double) cellWidth / 4, (double) cellWidth / 2, (double) cellWidth / 2);
                         }
                         else{
                             graphics.setFill(Color.GREEN); //for drawing grass;
+                            graphics.fillText(object.toString(),x + (double) cellWidth / 2, y + (double) cellWidth / 2);
                         }
-                        graphics.fillText(object.toString(),x+ cellWidth /2, y+ cellWidth /2);
                         graphics.setFill(Color.BLACK); //reset to default black font
                     }
                 }
