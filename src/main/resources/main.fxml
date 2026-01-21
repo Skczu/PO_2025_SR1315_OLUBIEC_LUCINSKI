@@ -10,12 +10,12 @@
             <children>
             <Label text="Map Width">
                <graphic>
-                  <Spinner fx:id="mapWidth" editable="true" initialValue="10" max="100"/>
+                  <Spinner fx:id="mapWidth"  initialValue="10" editable="true" min="1" max="100"/>
                </graphic>
             </Label>
             <Label text="Map Height">
                <graphic>
-                  <Spinner fx:id="mapHeight" editable="true" initialValue="10" max="100" />
+                  <Spinner fx:id="mapHeight"  initialValue="10" editable="true" min="1" max="100" />
                </graphic>
             </Label>
             <CheckBox fx:id="fastAnimals" mnemonicParsing="false" text="Fast Animals" />
@@ -26,27 +26,27 @@
                            <VBox>
                                <Label text="Initial animal amount">
                                    <graphic>
-                                       <Spinner fx:id="initialAnimalAmount" editable="true" initialValue="10" max="1000" prefHeight="15.0" prefWidth="90.0" />
+                                       <Spinner fx:id="initialAnimalAmount"  initialValue="10" editable="true" min="1" max="10000" prefHeight="15.0" prefWidth="90.0" />
                                    </graphic>
                                </Label>
                                <Label text="Initial animal energy">
                                    <graphic>
-                                       <Spinner fx:id="initialAnimalEnergy"  initialValue="10" max="1000" editable="true" prefHeight="15.0" prefWidth="90.0" />
+                                       <Spinner fx:id="initialAnimalEnergy"  initialValue="10" editable="true" min="1" max="10000"  prefHeight="15.0" prefWidth="90.0" />
                                    </graphic>
                                </Label>
                                <Label text="Daily energy loss">
                                    <graphic>
-                                       <Spinner fx:id="dailyEnergyLoss"  initialValue="1" max="1000" editable="true" prefHeight="15.0" prefWidth="90.0" />
+                                       <Spinner fx:id="dailyEnergyLoss" initialValue="1" min="-10000" max="10000"  prefHeight="15.0" prefWidth="90.0" />
                                    </graphic>
                                </Label>
                                <Label text="Reproduction ready energy">
                                    <graphic>
-                                       <Spinner fx:id="reproductionReadyEnergy"  initialValue="2" max="1000" editable="true" prefHeight="25.0" prefWidth="90.0" />
+                                       <Spinner fx:id="reproductionReadyEnergy"  initialValue="2" editable="true" min="0" max="10000"  prefHeight="25.0" prefWidth="90.0" />
                                    </graphic>
                                </Label>
                                <Label text="Copulation energy loss">
                                    <graphic>
-                                       <Spinner fx:id="copulationEnergyLoss"  initialValue="4" max="1000" editable="true" prefHeight="25.0" prefWidth="90.0" />
+                                       <Spinner fx:id="copulationEnergyLoss"  initialValue="4" max="10000"  prefHeight="25.0" prefWidth="90.0" />
                                    </graphic>
                                </Label>
                            </VBox>
@@ -57,17 +57,17 @@
                         <VBox>
                             <Label text="Initial grass amount">
                                 <graphic>
-                                    <Spinner fx:id="initialGrassAmount" initialValue="40" max="1000" editable="true" prefHeight="15.0" prefWidth="90.0" />
+                                    <Spinner fx:id="initialGrassAmount" initialValue="40" editable="true" min="0" max="1000"  prefHeight="15.0" prefWidth="90.0" />
                                 </graphic>
                             </Label>
                             <Label text="Daily grass growth">
                                 <graphic>
-                                    <Spinner fx:id="dailyGrassGrowth" initialValue="15" max="1000" editable="true" prefHeight="15.0" prefWidth="90.0" />
+                                    <Spinner fx:id="dailyGrassGrowth" initialValue="15" editable="true" min="0" max="1000"  prefHeight="15.0" prefWidth="90.0" />
                                 </graphic>
                             </Label>
                             <Label text="Grass energy">
                                 <graphic>
-                                    <Spinner fx:id="grassEnergy" initialValue="5" max="1000" editable="true" prefHeight="15.0" prefWidth="90.0" />
+                                    <Spinner fx:id="grassEnergy" initialValue="5" max="1000"  prefHeight="15.0" prefWidth="90.0" />
                                 </graphic>
                             </Label>
                         </VBox>
@@ -79,17 +79,17 @@
                        <VBox>
                            <Label text="Speed activation threshold">
                                <graphic>
-                                   <Spinner fx:id="fastAnimalsEnergyThreshold" initialValue="5" max="1000" editable="true" prefHeight="25.0" prefWidth="90.0" />
+                                   <Spinner fx:id="fastAnimalsEnergyThreshold" initialValue="5" editable="true" min="0" max="1000"  prefHeight="25.0" prefWidth="90.0" />
                                </graphic>
                            </Label>
                            <Label text="Speed increase threshold">
                                <graphic>
-                                   <Spinner fx:id="fastAnimalsSpeedIncreaseThreshold" initialValue="2" max="1000" editable="true" prefHeight="25.0" prefWidth="90.0" />
+                                   <Spinner fx:id="fastAnimalsSpeedIncreaseThreshold" initialValue="2" editable="true" min="1" max="1000"  prefHeight="25.0" prefWidth="90.0" />
                                </graphic>
                            </Label>
                            <Label text="Maximum speed">
                                <graphic>
-                                   <Spinner fx:id="fastAnimalsMaxSpeed" initialValue="8" max="1000" editable="true" prefHeight="25.0" prefWidth="90.0" />
+                                   <Spinner fx:id="fastAnimalsMaxSpeed" initialValue="8" editable="true" min="1" max="1000"  prefHeight="25.0" prefWidth="90.0" />
                                </graphic>
                            </Label>
                        </VBox>
@@ -99,17 +99,17 @@
 
                   <Label text="Minimum mutation amount">
                <graphic>
-                        <Spinner fx:id="minimumMutationAmount" initialValue="2" max="1000" editable="true" prefHeight="25.0" prefWidth="90.0" />
+                        <Spinner fx:id="minimumMutationAmount" initialValue="2" editable="true" min="0" max="1000"  prefHeight="25.0" prefWidth="90.0" />
                </graphic>
             </Label>
                   <Label text="Maximum mutation amount">
                <graphic>
-                        <Spinner fx:id="maximumMutationAmount" initialValue="5" max="1000" editable="true" prefHeight="25.0" prefWidth="90.0" />
+                        <Spinner fx:id="maximumMutationAmount" initialValue="5" max="1000"  prefHeight="25.0" prefWidth="90.0" />
                </graphic>
             </Label>
                   <Label text="Genome length">
                <graphic>
-                        <Spinner fx:id="genomeLength" initialValue="10" max="1000" editable="true" prefHeight="25.0" prefWidth="90.0" />
+                        <Spinner fx:id="genomeLength" initialValue="10" editable="true" min="1" max="1000"  prefHeight="25.0" prefWidth="90.0" />
                </graphic>
             </Label>
 

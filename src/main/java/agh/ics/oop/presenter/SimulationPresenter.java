@@ -148,15 +148,17 @@ public class SimulationPresenter implements MapChangeListener {
 
         displaySimulation = new Simulation(worldMap, parameters);
 
-        //setting up initial values for statistics, choiceBox and chart on start
         String value = statsChoiceBox.getValue();
         handleChoice(value);
         statsChart.setCreateSymbols(false);
 
-        //scaling the map
         scaleMap();
 
-        new Thread(displaySimulation).start();
+        Thread newThread = new Thread(displaySimulation);
+
+        newThread.setDaemon(true);
+
+        newThread.start();
     }
 
     private void clearGrid() {
