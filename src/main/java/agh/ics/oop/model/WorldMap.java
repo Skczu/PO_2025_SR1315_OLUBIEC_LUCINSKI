@@ -34,6 +34,10 @@ public class WorldMap implements MoveValidator {
         return animals.keySet().stream().filter(field -> !animals.get(field).isEmpty()).toList();
     }
 
+    public Map<Vector2d, List<Animal>> getAnimals() {
+        return animals;
+    }
+
     public UUID getId(){
         return mapId;
     }
@@ -42,14 +46,6 @@ public class WorldMap implements MoveValidator {
         return jungleBounds;
     }
 
-    // TODO remove or use in testing
-    public List<WorldElement> getElements(){
-        List<WorldElement> grassAndAnimals = new ArrayList<>(grasses.values());
-
-        grassAndAnimals.addAll(animals.values().stream().map((List<Animal> animalsOnField) -> animalsOnField.isEmpty() ? null : animalsOnField.getFirst()).filter(Objects::nonNull).toList());
-
-        return grassAndAnimals;
-    }
 
     public Boundary getCurrentBounds() {
         return mapBounds;
@@ -100,13 +96,17 @@ public class WorldMap implements MoveValidator {
     }
 
     public void place(Animal animal) throws IncorrectPositionException {
-        if (!animals.containsKey(animal.getPosition())) {
-            animals.put(animal.getPosition(), new ArrayList<>());
+        if (animal.getPosition().follows(mapBounds.lowerLeft()) && animal.getPosition().precedes(mapBounds.upperRight())){
+            if (!animals.containsKey(animal.getPosition())) {
+                animals.put(animal.getPosition(), new ArrayList<>());
+            }
+            animals.get(animal.getPosition()).add(animal);
+            mapChanged();
+        }
+        else{
+            throw new IncorrectPositionException(animal.getPosition());
         }
 
-        animals.get(animal.getPosition()).add(animal);
-
-        mapChanged();
     }
 
     public void move(Animal animal) {

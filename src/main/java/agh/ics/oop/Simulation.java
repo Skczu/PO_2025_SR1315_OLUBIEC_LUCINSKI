@@ -54,32 +54,36 @@ public class Simulation implements Runnable {
     @Override
     public void run() {
         while (true) {
-            waitDay();
+            runOneDay();
+        }
+    }
 
-            handlePause();
+    public void runOneDay(){
+        waitDay();
 
-            removeDeadAnimals();
+        handlePause();
 
-            if (parameters.isFastAnimals()) {
-                simulateFastAnimalsMovement();
-            } else {
-                simulateMovement();
-            }
+        removeDeadAnimals();
 
-            consumeGrass();
+        if (parameters.isFastAnimals()) {
+            simulateFastAnimalsMovement();
+        } else {
+            simulateMovement();
+        }
 
-            map.growGrass(parameters.dailyGrassGrowth());
+        consumeGrass();
 
-            copulate();
+        map.growGrass(parameters.dailyGrassGrowth());
 
-            map.mapChanged();
+        copulate();
 
-            simulationStatistics.update();
-            try {
-                exporter.export();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        map.mapChanged();
+
+        simulationStatistics.update();
+        try {
+            exporter.export();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
