@@ -2,7 +2,6 @@ package agh.ics.oop;
 
 import agh.ics.oop.model.*;
 import agh.ics.oop.model.enums.SimulationParameters;
-import agh.ics.oop.model.exceptions.IncorrectPositionException;
 import agh.ics.oop.model.util.RandomPositionGenerator;
 
 import java.io.IOException;
@@ -37,12 +36,8 @@ public class Simulation implements Runnable {
 
             Animal animal = new Animal(position, List.copyOf(generatedGenes), parameters.initialAnimalEnergy());
 
-            try {
-                map.place(animal);
-                animals.add(animal);
-            } catch (IncorrectPositionException e){
-                e.printStackTrace();
-            }
+            map.place(animal);
+            animals.add(animal);
         }
 
         simulationStatistics = new SimulationStatistics(this);

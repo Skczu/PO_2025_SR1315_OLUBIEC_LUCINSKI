@@ -12,8 +12,6 @@ public class RandomGrassGenerator implements Iterable<Vector2d> {
     Random random = new Random();
 
     public RandomGrassGenerator(Boundary mapBoundary, Boundary jungleBoundary, int grassCount, Set<Vector2d> excludedPositions) {
-        //simplest method - generate a list of all possible positions and shuffle them
-
         for (int i = 0; i <= mapBoundary.upperRight().x(); i++) {
             for (int j = 0; j <= mapBoundary.upperRight().y(); j++) {
                 Vector2d newPos = new Vector2d(i,j);

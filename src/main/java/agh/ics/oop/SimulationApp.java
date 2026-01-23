@@ -6,8 +6,6 @@ import javafx.stage.Stage;
 public class SimulationApp extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        //separated logic to manager class
-        //in order to avoid breaking mvp moved navigation to SceneManager class
         new SceneManager(primaryStage).showMainWindow();
     }
 }

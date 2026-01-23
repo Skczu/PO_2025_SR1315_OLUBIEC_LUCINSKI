@@ -1,7 +1,6 @@
 package agh.ics.oop.model;
 
 import agh.ics.oop.model.enums.SimulationParameters;
-import agh.ics.oop.model.exceptions.IncorrectPositionException;
 import agh.ics.oop.model.util.GenomeGenerator;
 import agh.ics.oop.model.util.RandomGrassGenerator;
 import javafx.util.Pair;
@@ -42,7 +41,6 @@ public class WorldMap implements MoveValidator {
         return jungleBounds;
     }
 
-    // TODO remove or use in testing
     public List<WorldElement> getElements(){
         List<WorldElement> grassAndAnimals = new ArrayList<>(grasses.values());
 
@@ -99,7 +97,7 @@ public class WorldMap implements MoveValidator {
         }
     }
 
-    public void place(Animal animal) throws IncorrectPositionException {
+    public void place(Animal animal) {
         if (!animals.containsKey(animal.getPosition())) {
             animals.put(animal.getPosition(), new ArrayList<>());
         }

@@ -12,7 +12,6 @@ public class RandomPositionGenerator implements Iterable<Vector2d> {
     List<Vector2d> enrolledPositions = new ArrayList<>();
 
     public RandomPositionGenerator(int maxWidth, int maxHeight, int grassCount) {
-        //simplest method - generate a list of all possible positions and shuffle them
         for (int i = 0; i < maxWidth+1; i++) {
             for (int j = 0; j < maxHeight+1; j++) {
                 possiblePositions.add(new Vector2d(i,j));
