@@ -1,6 +1,7 @@
 package agh.ics.oop.model;
 
 import agh.ics.oop.model.enums.SimulationParameters;
+import agh.ics.oop.model.exceptions.IncorrectPositionException;
 import agh.ics.oop.model.util.GenomeGenerator;
 import agh.ics.oop.model.util.RandomGrassGenerator;
 import javafx.util.Pair;
@@ -33,20 +34,16 @@ public class WorldMap implements MoveValidator {
         return animals.keySet().stream().filter(field -> !animals.get(field).isEmpty()).toList();
     }
 
+    public Map<Vector2d, List<Animal>> getAnimals() {
+        return animals;
+    }
+
     public UUID getId(){
         return mapId;
     }
 
     public Boundary getJungleBounds() {
         return jungleBounds;
-    }
-
-    public List<WorldElement> getElements(){
-        List<WorldElement> grassAndAnimals = new ArrayList<>(grasses.values());
-
-        grassAndAnimals.addAll(animals.values().stream().map((List<Animal> animalsOnField) -> animalsOnField.isEmpty() ? null : animalsOnField.getFirst()).filter(Objects::nonNull).toList());
-
-        return grassAndAnimals;
     }
 
     public Boundary getCurrentBounds() {
@@ -97,14 +94,17 @@ public class WorldMap implements MoveValidator {
         }
     }
 
-    public void place(Animal animal) {
-        if (!animals.containsKey(animal.getPosition())) {
-            animals.put(animal.getPosition(), new ArrayList<>());
+    public void place(Animal animal) throws IncorrectPositionException {
+        if (animal.getPosition().follows(mapBounds.lowerLeft()) && animal.getPosition().precedes(mapBounds.upperRight())){
+            if (!animals.containsKey(animal.getPosition())) {
+                animals.put(animal.getPosition(), new ArrayList<>());
+            }
+
+            animals.get(animal.getPosition()).add(animal);
+            mapChanged();
+        } else {
+            throw new IncorrectPositionException(animal.getPosition());
         }
-
-        animals.get(animal.getPosition()).add(animal);
-
-        mapChanged();
     }
 
     public void move(Animal animal) {
