@@ -36,7 +36,7 @@
                                </Label>
                                <Label text="Daily energy loss">
                                    <graphic>
-                                       <Spinner fx:id="dailyEnergyLoss" initialValue="1" min="-10000" max="10000"  prefHeight="15.0" prefWidth="90.0" />
+                                       <Spinner fx:id="dailyEnergyLoss" initialValue="1" editable="true" min="-10000" max="10000"  prefHeight="15.0" prefWidth="90.0" />
                                    </graphic>
                                </Label>
                                <Label text="Reproduction ready energy">
