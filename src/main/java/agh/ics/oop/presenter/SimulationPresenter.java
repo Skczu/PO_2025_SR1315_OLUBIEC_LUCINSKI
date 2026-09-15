@@ -111,7 +111,7 @@ public class SimulationPresenter implements MapChangeListener {
             drawMap(worldMap);
             //set statistics
 
-            List<List<Integer>> bestGenes = displaySimulation.getSimulationStatistics().getMostCommonGenomes(3);
+            List<Genome> bestGenes = displaySimulation.getSimulationStatistics().getMostCommonGenomes(3);
 
             livingAnimalsLabel.setText( "Living animals: " + displaySimulation.getSimulationStatistics().getAnimalsCnt().getLast());
 
@@ -125,16 +125,17 @@ public class SimulationPresenter implements MapChangeListener {
 
             avgChildrenCntLabel.setText("Avg children cnt: " + displaySimulation.getSimulationStatistics().getAvgChildrenCnt().getLast());
 
+            //TODO fix fxml cutting first char from genome
             if(!bestGenes.isEmpty()){
-                firstGenome.setText("• " + bestGenes.get(0));
+                firstGenome.setText("• " + bestGenes.get(0).toString());
             }
 
             if(bestGenes.size()>1){
-                secondGenome.setText("• " + bestGenes.get(1));
+                secondGenome.setText("• " + bestGenes.get(1).toString());
             }
 
             if(bestGenes.size()>2){
-                thirdGenome.setText("• " + bestGenes.get(2));
+                thirdGenome.setText("• " + bestGenes.get(2).toString());
             }
 
             updateChart();

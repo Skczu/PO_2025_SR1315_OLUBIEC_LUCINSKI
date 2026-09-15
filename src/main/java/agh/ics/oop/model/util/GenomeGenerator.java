@@ -16,8 +16,9 @@ public class GenomeGenerator {
     public List<Integer> generateGenome(Animal strongerParent, Animal weakerParent) {
         int strongerParentEnergy = strongerParent.getEnergy();
         int weakerParentEnergy = weakerParent.getEnergy();
-        List<Integer> strongerParentGenes = strongerParent.getGenes();
-        List<Integer> weakerParentGenes = weakerParent.getGenes();
+        //TODO implement genome better
+        List<Integer> strongerParentGenes = strongerParent.getGenes().getGenes();
+        List<Integer> weakerParentGenes = weakerParent.getGenes().getGenes();
 
         int genomeSplitPoint = getGenomeSplitPoint(strongerParentEnergy, weakerParentEnergy);
 

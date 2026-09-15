@@ -1,5 +1,6 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.enums.MapDirection;
 import agh.ics.oop.model.enums.SimulationParameters;
 import agh.ics.oop.model.exceptions.IncorrectPositionException;
 import agh.ics.oop.model.util.GenomeGenerator;
@@ -216,7 +217,7 @@ public class WorldMap implements MoveValidator {
             Animal strongerParent = animalsToCopulate.get(0);
             Animal weakerParent = animalsToCopulate.get(1);
 
-            List<Integer> newGenome = genomeGenerator.generateGenome(strongerParent, weakerParent);
+            Genome newGenome =new Genome(genomeGenerator.generateGenome(strongerParent, weakerParent));
 
             Animal newborn = new Animal(field, newGenome, parameters.copulationEnergyLoss() * 2);
 

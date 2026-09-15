@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
 public class Simulation implements Runnable {
     private final List<Animal> animals = new ArrayList<>();
     private final List<Animal> deadAnimals = new ArrayList<>(); //for statistics purposes
@@ -27,15 +28,9 @@ public class Simulation implements Runnable {
         Vector2d topRightCorner = map.getCurrentBounds().upperRight();
         RandomPositionGenerator randomPositionGenerator = new RandomPositionGenerator(topRightCorner.x(), topRightCorner.y(), parameters.initialAnimalAmount());
 
-        List<Integer> generatedGenes = new ArrayList<>();
-        for (int i = 0; i < parameters.genomeLength(); i++) {
-            generatedGenes.add(i);
-        }
-
         for (Vector2d position : randomPositionGenerator) {
-            Collections.shuffle(generatedGenes);
-
-            Animal animal = new Animal(position, List.copyOf(generatedGenes), parameters.initialAnimalEnergy());
+            Genome genome = new Genome(parameters.genomeLength());
+            Animal animal = new Animal(position, genome, parameters.initialAnimalEnergy());
 
             try {
                 map.place(animal);

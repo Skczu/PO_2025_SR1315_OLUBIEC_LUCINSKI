@@ -1,5 +1,8 @@
 package agh.ics.oop;
 
+import agh.ics.oop.model.Genome;
+
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -17,72 +20,75 @@ public class StatisticsExporter {
     }
 
     public void export() throws IOException {
-        try (FileWriter writer = new FileWriter("statistics/statistics"+mapUid+".csv", false)) {
 
-            List<List<Integer>> genomes = statistics.getMostCommonGenomes(3);
+        String fileName = "statistics"+mapUid+".csv";
+        File file = new File("statistics/"+fileName);
 
-            writer.append("animalsCnt");
-            for (Double val : statistics.getAnimalsCnt()){
-                writer.append(";").append(String.valueOf(val));
+        File parent = file.getParentFile();
+        if (parent != null && !parent.exists() && !parent.mkdirs()) {
+            throw new IOException("Cannot create directory: " + parent);
+        }
+
+        try (FileWriter writer = new FileWriter("statistics/"+fileName, true)) {
+            List<Genome> genomes = statistics.getMostCommonGenomes(3);
+
+            if (file.length()==0) {
+                //write header
+                writer.append("animalsCnt;");
+                writer.append("grassCnt;");
+                writer.append("freeSpaces;");
+                writer.append("avgEnergy;");
+                writer.append("avgChildrenCnt;");
+                writer.append("firstGenome;");
+                writer.append("secondGenome;");
+                writer.append("thirdGenome");
+                writer.append("\n");
             }
-            writer.append("\n");
 
-            writer.append("grassCnt");
-            for (Double val : statistics.getGrassesCnt()){
-                writer.append(";").append(String.valueOf(val));
-            }
-            writer.append("\n");
+            //animals count
+            writer.append(String.valueOf(statistics.getAnimalsCnt().getLast())).append(";");
 
-            writer.append("freeSpaces");
-            for (Double val : statistics.getFreeSpaces()){
-                writer.append(";").append(String.valueOf(val));
-            }
-            writer.append("\n");
+            //grass count
+            writer.append(String.valueOf(statistics.getGrassesCnt().getLast())).append(";");
 
-            writer.append("avgEnergy");
-            for (Double val : statistics.getAvgEnergy()){
-                writer.append(";").append(String.valueOf(val));
-            }
-            writer.append("\n");
+            //free spaces count
+            writer.append(String.valueOf(statistics.getFreeSpaces().getLast())).append(";");
 
-            writer.append("avgChildrenCnt");
-            for (Double val : statistics.getAvgChildrenCnt()){
-                writer.append(";").append(String.valueOf(val));
-            }
-            writer.append("\n");
+            //avg energy
+            writer.append(String.valueOf(statistics.getAvgEnergy().getLast())).append(";");
 
-            writer.append("avgLifespan");
-            for (Double val : statistics.getAvgLifespan()){
-                writer.append(";").append(String.valueOf(val));
-            }
-            writer.append("\n");
+            //avg children count
+            writer.append(String.valueOf(statistics.getAvgChildrenCnt().getLast())).append(";");
 
-            writer.append(";;;;;\n");
+            //avg lifespan
+            writer.append(String.valueOf(statistics.getAvgLifespan().getLast())).append(";");
 
-            writer.append("firstGenome");
+            //first most popular genome
             if(!genomes.isEmpty()){
-                for (Integer val : genomes.get(0)){
-                    writer.append(";").append(String.valueOf(val));
-                }
+                writer.append(genomes.get(0).getGenes().toString());
             }
-            writer.append("\n");
+            else {
+                writer.append("-");
+            }
+            writer.append(";");
 
-            writer.append("secondGenome");
+            //second most popular genome
             if(genomes.size()>1){
-                for (Integer val : genomes.get(1)){
-                    writer.append(";").append(String.valueOf(val));
-                }
+                writer.append(genomes.get(1).getGenes().toString());
             }
-            writer.append("\n");
+            else {
+                writer.append("-");
+            }
+            writer.append(";");
 
-            writer.append("thirdGenome");
+            //third most popular genome
             if(genomes.size()>2){
-                for (Integer val : genomes.get(2)){
-                    writer.append(";").append(String.valueOf(val));
-                }
+                writer.append(genomes.get(2).getGenes().toString());
+            }
+            else {
+                writer.append("-");
             }
             writer.append("\n");
         }
-
     }
 }

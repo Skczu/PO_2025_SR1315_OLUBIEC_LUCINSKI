@@ -1,6 +1,7 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.Animal;
+import agh.ics.oop.model.Genome;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public class SimulationStatistics {
         freeSpaces.add((double) (width*height-simulation.getMap().getAnimalFields().size()));
     }
 
-    public List<List<Integer>> getMostCommonGenomes(int limit) {
+    public List<Genome> getMostCommonGenomes(int limit) {
         return simulation.getAnimals().stream()
                 .collect(Collectors.groupingBy(Animal::getGenes, Collectors.counting()
                 ))

@@ -1,5 +1,6 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.enums.MapDirection;
 import javafx.util.Pair;
 
 public interface MoveValidator {
@@ -12,5 +13,5 @@ public interface MoveValidator {
      * @param position The position checked for the movement possibility.
      * @return added position and unchanged orientation or "bounced" position and changed orientation
      */
-    Pair<MapDirection,Vector2d> positionAfterMove( MapDirection facing, Vector2d position);
+    Pair<MapDirection,Vector2d> positionAfterMove(MapDirection facing, Vector2d position);
 }
