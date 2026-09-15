@@ -41,7 +41,7 @@ public class SimulationStatistics {
 
     public List<Genome> getMostCommonGenomes(int limit) {
         return simulation.getAnimals().stream()
-                .collect(Collectors.groupingBy(Animal::getGenes, Collectors.counting()
+                .collect(Collectors.groupingBy(Animal::getGenome, Collectors.counting()
                 ))
                 .entrySet()
                 .stream()

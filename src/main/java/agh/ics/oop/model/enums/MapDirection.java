@@ -12,6 +12,7 @@ public enum MapDirection {
     WEST,
     NORTHWEST;
 
+
     @Override
     public String toString(){ //returns only schematic orientation
         return switch(this) {
@@ -26,30 +27,42 @@ public enum MapDirection {
         };
     }
 
-    public MapDirection next(){ //returns next direction in clockwise order
-        return switch(this) {
-            case NORTH -> NORTHEAST;
-            case NORTHEAST -> EAST;
-            case EAST -> SOUTHEAST;
-            case SOUTHEAST -> SOUTH;
-            case SOUTH -> SOUTHWEST;
-            case SOUTHWEST -> WEST;
-            case WEST -> NORTHWEST;
-            case NORTHWEST -> NORTH;
+
+    public static MapDirection fromDigit(int digit){
+        return switch (Math.abs(digit)%8) {
+            case 0 -> NORTH;
+            case 1 -> NORTHEAST;
+            case 2 -> EAST;
+            case 3 -> SOUTHEAST;
+            case 4 -> SOUTH;
+            case 5 -> SOUTHWEST;
+            case 6 -> WEST;
+            case 7 -> NORTHWEST;
+            default -> throw new IllegalArgumentException("Invalid digit");
         };
     }
 
-    public MapDirection rotate(int n){ //rotates direction by n in clockwise order
-        if (n<0) {
-            n+=7;
-        }
-        MapDirection newDirection = this;
-        for (int i = 0; i < n; i++) {
-            newDirection = newDirection.next();
-        }
-        return newDirection;
+    public int toDigit(){
+        return switch (this){
+            case NORTH ->0;
+            case NORTHEAST ->1;
+            case EAST ->2;
+            case SOUTHEAST ->3;
+            case SOUTH ->4;
+            case SOUTHWEST ->5;
+            case WEST ->6;
+            case NORTHWEST ->7;
+        };
     }
 
+    //rotates relative to current orientation
+    //returns actual orientation of object
+    //ex: facing east and rotates south -> facing west
+    public MapDirection rotate(MapDirection orientation, MapDirection rotation){
+        return fromDigit((rotation.toDigit() + orientation.toDigit()) % 8);
+    }
+
+    //contains the logic of entities bouncing of map edges and changing their orientation by doing so
     public MapDirection bounce(){
         return switch(this) {
             case NORTH -> SOUTH;

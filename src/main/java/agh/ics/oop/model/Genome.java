@@ -1,5 +1,7 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.enums.MapDirection;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,11 +41,25 @@ public class Genome {
     public String toString() {
         String genString = "[";
         for (Integer val : genes){
-            genString+= val.toString();
+            genString += val.toString();
             genString+=",";
         }
         genString = genString.substring(1,genString.length()-1);
         genString+="]";
         return genString;
+    }
+
+    public int getCurrentlyUsed() {
+        return currentlyUsed;
+    }
+
+    public void setCurrentlyUsed(int currentlyUsed) {
+        this.currentlyUsed = currentlyUsed;
+    }
+
+    //returns information about which direction to turn and switches to next gene
+    public MapDirection getNextDirection(){
+        currentlyUsed = (currentlyUsed + 1) % genes.size();
+        return MapDirection.fromDigit(currentlyUsed);
     }
 }

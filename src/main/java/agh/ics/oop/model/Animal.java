@@ -4,14 +4,13 @@ import agh.ics.oop.model.enums.MapDirection;
 import javafx.util.Pair;
 
 import java.util.Comparator;
-import java.util.List;
 
 public class Animal implements WorldElement, Comparable<Animal> {
     private MapDirection currentOrientation;
 
     private Vector2d mapPosition;
 
-    private final Genome genes;
+    private final Genome genome;
 
     private int usingGene;
 
@@ -23,13 +22,13 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
     private int speed;
 
-    public Animal(Vector2d mapPosition, Genome genes, int startEnergy){
+    public Animal(Vector2d mapPosition, Genome genome, int startEnergy){
         this.currentOrientation = MapDirection.NORTH;
         this.mapPosition = mapPosition;
         this.usingGene = 0;
         this.age = 0;
         this.childrenCnt = 0;
-        this.genes = genes;
+        this.genome = genome;
         this.energy = startEnergy;
         this.speed = 1;
     }
@@ -45,14 +44,12 @@ public class Animal implements WorldElement, Comparable<Animal> {
     }
 
     public void move(MoveValidator moveValidator){
-        currentOrientation = currentOrientation.rotate(genes.getGenes().get(usingGene));
+        currentOrientation = currentOrientation.rotate(currentOrientation, genome.getNextDirection());
 
         Pair<MapDirection,Vector2d> newPosition = moveValidator.positionAfterMove(currentOrientation,mapPosition);
 
         currentOrientation = newPosition.getKey();
         mapPosition = newPosition.getValue();
-
-        usingGene = (usingGene + 1) % genes.getGenes().size();
     }
 
     public void moveExtra(MoveValidator moveValidator) {
@@ -104,8 +101,8 @@ public class Animal implements WorldElement, Comparable<Animal> {
         return currentOrientation;
     }
 
-    public Genome getGenes() {
-        return genes;
+    public Genome getGenome() {
+        return genome;
     }
 
     public int getChildrenCnt() {
