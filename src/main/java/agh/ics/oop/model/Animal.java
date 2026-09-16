@@ -6,6 +6,7 @@ import javafx.util.Pair;
 import java.util.Comparator;
 
 public class Animal implements WorldElement, Comparable<Animal> {
+
     private MapDirection currentOrientation;
 
     private Vector2d mapPosition;
@@ -41,15 +42,6 @@ public class Animal implements WorldElement, Comparable<Animal> {
     }
 
     public void move(MoveValidator moveValidator){
-        currentOrientation = currentOrientation.rotate(currentOrientation, genome.getNextDirection());
-
-        Pair<MapDirection,Vector2d> newPosition = moveValidator.positionAfterMove(currentOrientation,mapPosition);
-
-        currentOrientation = newPosition.getKey();
-        mapPosition = newPosition.getValue();
-    }
-
-    public void moveExtra(MoveValidator moveValidator) {
         Pair<MapDirection,Vector2d> newPosition = moveValidator.positionAfterMove(currentOrientation,mapPosition);
 
         currentOrientation = newPosition.getKey();
@@ -67,13 +59,19 @@ public class Animal implements WorldElement, Comparable<Animal> {
         }
     }
 
-    public void useEnergy(int dailyConsumption){
-        energy -= dailyConsumption;
-        age += 1;
+    public void useEnergy(int consumption){
+        energy -= consumption;
+    }
+
+    public void liveOneDay(){
+        age+=1;
     }
 
     public void setSpeed(int fastAnimalsEnergyThreshold, int fastAnimalsSpeedIncreaseThreshold, int fastAnimalsMaxSpeed){
-        if (energy >= fastAnimalsMaxSpeed) return;
+        if (energy >= fastAnimalsMaxSpeed) {
+         speed=1;
+         return;
+        }
 
         if (energy > fastAnimalsEnergyThreshold) {
             speed = 1 + (energy - fastAnimalsEnergyThreshold + 1) / fastAnimalsSpeedIncreaseThreshold;
@@ -118,4 +116,9 @@ public class Animal implements WorldElement, Comparable<Animal> {
     public int getSpeed() {
         return speed;
     }
+
+    public void rotate(){
+        currentOrientation = currentOrientation.rotate(currentOrientation, genome.getNextDirection());
+    }
+
 }

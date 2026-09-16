@@ -71,6 +71,8 @@ public class Simulation implements Runnable {
 
         copulate();
 
+        increaseAge();
+
         map.mapChanged();
 
         simulationStatistics.update();
@@ -115,26 +117,19 @@ public class Simulation implements Runnable {
     }
 
     private void simulateMovement() {
+        if (animals.isEmpty()) return;
         for (Animal animal : animals) {
-            map.move(animal);
+            animal.rotate();
+            map.regularMove(animal);
         }
     }
 
     private void simulateFastAnimalsMovement() {
         if (animals.isEmpty()) return;
 
-        for (Animal animal : animals) {
-            animal.setSpeed(parameters.fastAnimalsEnergyThreshold(), parameters.fastAnimalsSpeedIncreaseThreshold(), parameters.fastAnimalsMaxSpeed());
-
-            int speed = animal.getSpeed();
-
-            if (speed > 1) {
-                for (int i = 1; i <= speed; i++) {
-                    if (map.fastMove(animal, i)) break;
-                }
-            } else {
-                map.move(animal);
-            }
+        for (Animal animal : animals){
+            animal.rotate();
+            map.fastMove(animal);
         }
     }
 
@@ -144,6 +139,12 @@ public class Simulation implements Runnable {
 
     private void copulate() {
         animals.addAll(map.copulate());
+    }
+
+    private void increaseAge() {
+        for (Animal animal : animals){
+            animal.liveOneDay();
+        }
     }
 
     public List<Animal> getAnimals() {

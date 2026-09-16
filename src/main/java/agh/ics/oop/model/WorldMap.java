@@ -108,7 +108,7 @@ public class WorldMap implements MoveValidator {
         }
     }
 
-    public void move(Animal animal) {
+    private void move(Animal animal) {
         Vector2d posBeforeMove = animal.getPosition();
         List<Animal> fieldBeforeMove = animals.get(posBeforeMove);
 
@@ -116,7 +116,6 @@ public class WorldMap implements MoveValidator {
             fieldBeforeMove.remove(animal);
 
             animal.move(this);
-            animal.useEnergy(parameters.dailyEnergyLoss());
 
             if (!animals.containsKey(animal.getPosition())) {
                 animals.put(animal.getPosition(), new ArrayList<>());
@@ -126,44 +125,42 @@ public class WorldMap implements MoveValidator {
         }
     }
 
-    /**
-     * @return whether the animal crashed into another
-     */
-    public boolean fastMove(Animal animal, int step) {
-        Vector2d posBeforeMove = animal.getPosition();
-        List<Animal> fieldBeforeMove = animals.get(posBeforeMove);
-
-        if (fieldBeforeMove.contains(animal)) {
-            fieldBeforeMove.remove(animal);
-
-            if (step == 1) {
-                animal.move(this);
-            } else {
-                animal.moveExtra(this);
-            }
-
-            Vector2d field = animal.getPosition();
-
-            grasses.remove(field);
-
-            if (!animals.containsKey(field)) {
-                animals.put(field, new ArrayList<>());
-            }
-
-            animals.get(field).add(animal);
-
-            if (animals.get(field).size() > 1) {
-                animal.useEnergy(parameters.dailyEnergyLoss() * 2);
-
-                return true;
-            }
-
-            if (step == animal.getSpeed()) animal.useEnergy(parameters.dailyEnergyLoss());
-        }
-
-        return false;
+    //moves animal when fast variant is disabled
+    //no check for collision when moving with regular speed
+    public void regularMove(Animal animal){
+        move(animal);
+        animal.useEnergy(parameters.dailyEnergyLoss());
     }
 
+    //moves animal when fast variant enabled
+    public void fastMove(Animal animal){
+        animal.setSpeed(parameters.fastAnimalsEnergyThreshold(), parameters.fastAnimalsSpeedIncreaseThreshold(), parameters.fastAnimalsMaxSpeed());
+
+        int speed = animal.getSpeed();
+
+        if (speed > 1) {
+                for (int step = 1; step <= speed; step++) {
+                    move(animal);
+                    Vector2d afterMove = animal.getPosition();
+
+                    //animal tramples grass on the way
+                    grasses.remove(afterMove);
+
+                    //check if animal collides after each step
+                    if (animals.get(afterMove).size() > 1) {
+                        //penalize collision by doubling daily energy consumption
+                        animal.useEnergy(parameters.dailyEnergyLoss() * 2);
+                        return;
+                    }
+                }
+        } else {
+            //no check for collision when moving with regular speed
+            move(animal);
+        }
+        animal.useEnergy(parameters.dailyEnergyLoss());
+    }
+
+    //removes animals with energy <=0
     public List<Animal> removeDeadAnimals() {
         List<Animal> deadAnimals = new ArrayList<>();
 
@@ -184,6 +181,7 @@ public class WorldMap implements MoveValidator {
         return deadAnimals;
     }
 
+    //only the strongest animal can consume grass on each field
     public void consumeGrass() {
         List<Vector2d> consumedFields = new ArrayList<>();
 
