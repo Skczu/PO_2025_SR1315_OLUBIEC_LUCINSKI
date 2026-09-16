@@ -12,8 +12,6 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
     private final Genome genome;
 
-    private int usingGene;
-
     private int energy;
 
     private int age;
@@ -25,7 +23,6 @@ public class Animal implements WorldElement, Comparable<Animal> {
     public Animal(Vector2d mapPosition, Genome genome, int startEnergy){
         this.currentOrientation = MapDirection.NORTH;
         this.mapPosition = mapPosition;
-        this.usingGene = 0;
         this.age = 0;
         this.childrenCnt = 0;
         this.genome = genome;
@@ -83,6 +80,7 @@ public class Animal implements WorldElement, Comparable<Animal> {
         }
     }
 
+    //decides which animal is superior and eats before others on the same field
     @Override
     public int compareTo(Animal other) {
         return Comparator

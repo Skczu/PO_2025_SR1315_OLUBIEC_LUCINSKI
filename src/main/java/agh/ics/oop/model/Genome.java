@@ -31,11 +31,16 @@ public class Genome {
         this.currentlyUsed=0;
     }
 
-    //TODO implement next gene and other methods
     public List<Integer> getGenes() {
         return genes;
     }
 
+    public void setRandomGene(int genomePosition){
+        if (genomePosition<0 || genomePosition>=genes.size()){
+            throw new IllegalArgumentException("Invalid position in genome: "+genomePosition);
+        }
+        genes.set(genomePosition,(int) (Math.random() * GENES_VARIETY));
+    }
 
     @Override
     public String toString() {

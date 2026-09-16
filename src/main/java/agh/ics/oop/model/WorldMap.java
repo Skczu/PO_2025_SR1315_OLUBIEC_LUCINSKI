@@ -201,8 +201,10 @@ public class WorldMap implements MoveValidator {
         }
     }
 
+    //implements animal copulation
+    //only two strongest animals on each field do copulate once a day
     public List<Animal> copulate() {
-        GenomeGenerator genomeGenerator = new GenomeGenerator(parameters.genomeLength());
+        GenomeGenerator genomeGenerator = new GenomeGenerator(parameters.genomeLength(),parameters.minMutationAmount(),parameters.maxMutationAmount());
         List<Animal> newbornAnimals = new ArrayList<>();
 
         for (Vector2d field : animals.keySet()) {
@@ -217,7 +219,7 @@ public class WorldMap implements MoveValidator {
             Animal strongerParent = animalsToCopulate.get(0);
             Animal weakerParent = animalsToCopulate.get(1);
 
-            Genome newGenome =new Genome(genomeGenerator.generateGenome(strongerParent, weakerParent));
+            Genome newGenome = genomeGenerator.generateGenome(strongerParent, weakerParent);
 
             Animal newborn = new Animal(field, newGenome, parameters.copulationEnergyLoss() * 2);
 
