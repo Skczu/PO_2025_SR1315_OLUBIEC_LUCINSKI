@@ -95,6 +95,11 @@ public class WorldMap implements MoveValidator {
         }
     }
 
+    /**
+     * places animal on a map if possible
+     * @param animal animal to be placed
+     * @throws IncorrectPositionException when animal is about to be placed for example off map bounds
+     */
     public void place(Animal animal) throws IncorrectPositionException {
         if (animal.getPosition().follows(mapBounds.lowerLeft()) && animal.getPosition().precedes(mapBounds.upperRight())){
             if (!animals.containsKey(animal.getPosition())) {
@@ -125,14 +130,20 @@ public class WorldMap implements MoveValidator {
         }
     }
 
-    //moves animal when fast variant is disabled
-    //no check for collision when moving with regular speed
+    /**
+     * moves animal when fast variant is disabled
+     * no check for collision when moving with regular speed
+     * @param animal animal that moves during one day
+     */
     public void regularMove(Animal animal){
         move(animal);
         animal.useEnergy(parameters.dailyEnergyLoss());
     }
 
-    //moves animal when fast variant enabled
+    /**
+     * moves animal when fast variant enabled
+     * @param animal animal to move during one day when fast move variant is enabled
+     */
     public void fastMove(Animal animal){
         animal.setSpeed(parameters.fastAnimalsEnergyThreshold(), parameters.fastAnimalsSpeedIncreaseThreshold(), parameters.fastAnimalsMaxSpeed());
 
@@ -160,7 +171,10 @@ public class WorldMap implements MoveValidator {
         animal.useEnergy(parameters.dailyEnergyLoss());
     }
 
-    //removes animals with energy <=0
+    /**
+     * removes animals with energy <=0
+     * @return list of animals after all dead are removed
+     */
     public List<Animal> removeDeadAnimals() {
         List<Animal> deadAnimals = new ArrayList<>();
 
@@ -181,7 +195,9 @@ public class WorldMap implements MoveValidator {
         return deadAnimals;
     }
 
-    //only the strongest animal can consume grass on each field
+    /**
+     * only the strongest animal can consume grass on each field
+     */
     public void consumeGrass() {
         List<Vector2d> consumedFields = new ArrayList<>();
 
@@ -199,8 +215,11 @@ public class WorldMap implements MoveValidator {
         }
     }
 
-    //implements animal copulation
-    //only two strongest animals on each field do copulate once a day
+    /**
+     * implements animal copulation
+     * only two strongest animals on each field do copulate once a day
+     * @return list of animals on a field after copulation has taken place or not
+     */
     public List<Animal> copulate() {
         GenomeGenerator genomeGenerator = new GenomeGenerator(parameters.genomeLength(),parameters.minMutationAmount(),parameters.maxMutationAmount());
         List<Animal> newbornAnimals = new ArrayList<>();

@@ -27,9 +27,17 @@ public enum MapDirection {
         };
     }
 
-
+    /**
+     * assumes that digits mean positions as 8 step clockwise directions
+     * @param digit number 0-7 to be converted in a clockwise order to one of 8 directions
+     * @return converted direction
+     */
     public static MapDirection fromDigit(int digit){
-        return switch (Math.abs(digit)%8) {
+        int rem = digit%8;
+        if (rem < 0){
+            rem = 8-Math.abs(rem);
+        }
+        return switch (rem) {
             case 0 -> NORTH;
             case 1 -> NORTHEAST;
             case 2 -> EAST;
@@ -55,14 +63,20 @@ public enum MapDirection {
         };
     }
 
-    //rotates relative to current orientation
-    //returns actual orientation of object
-    //ex: facing east and rotates south -> facing west
-    public MapDirection rotate(MapDirection orientation, MapDirection rotation){
-        return fromDigit((rotation.toDigit() + orientation.toDigit()) % 8);
+    /**
+     * rotates relative to current orientation
+     * facing east and rotates south -> facing west
+     * @param rotation how much will object rotate ex SOUTH -> 180 degrees
+     * @return actual orientation of object
+     */
+    public MapDirection rotate(MapDirection rotation){
+        return fromDigit((rotation.toDigit() + this.toDigit()) % 8);
     }
 
-    //contains the logic of entities bouncing of map edges and changing their orientation by doing so
+    /**
+     * contains the logic of entities bouncing of map edges and changing their orientation by doing so
+     * @return orientation after bouncing of en edge hit from each direction
+     */
     public MapDirection bounce(){
         return switch(this) {
             case NORTH -> SOUTH;
@@ -76,7 +90,10 @@ public enum MapDirection {
         };
     }
 
-    public Vector2d toUnitVector(){ //returns unitary vector corresponding to direction
+    /**
+     * @return unitary vector corresponding to direction
+     */
+    public Vector2d toUnitVector(){ //returns
         return switch(this) {
             case NORTH -> new Vector2d(0,1);
             case NORTHEAST -> new Vector2d(1,1);

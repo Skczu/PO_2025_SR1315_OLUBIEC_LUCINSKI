@@ -8,14 +8,35 @@ import static org.junit.jupiter.api.Assertions.*;
 class MapDirectionTest {
 
     @Test
-    void nextDirection() {
-        //discarded given when then structure because of tested cases simplicity
-        assertEquals(MapDirection.NORTHEAST,MapDirection.NORTH.next());
-        assertEquals(MapDirection.EAST,MapDirection.NORTHEAST.next());
-        assertEquals(MapDirection.SOUTHEAST,MapDirection.EAST.next());
-        assertEquals(MapDirection.SOUTHWEST,MapDirection.SOUTH.next());
-        assertEquals(MapDirection.WEST,MapDirection.SOUTHWEST.next());
-        assertEquals(MapDirection.NORTHWEST,MapDirection.WEST.next());
-        assertEquals(MapDirection.NORTH,MapDirection.NORTHWEST.next());
+    void transformsDigitsCorrectly(){
+        //when
+        int a = 0;
+        int b = 7;
+        int c = 8;
+        int d = 1001;
+        int e = -2;
+
+        //then
+        assertEquals(MapDirection.NORTH,MapDirection.fromDigit(a));
+        assertEquals(MapDirection.NORTHWEST,MapDirection.fromDigit(b));
+        assertEquals(MapDirection.NORTH,MapDirection.fromDigit(c));
+        assertEquals(MapDirection.NORTHEAST,MapDirection.fromDigit(d));
+        assertEquals(MapDirection.WEST,MapDirection.fromDigit(e));
+    }
+
+    @Test
+    void rotatesCorrectly(){
+        //when
+        MapDirection dir1= MapDirection.NORTH;
+        MapDirection dir2= MapDirection.SOUTH;
+        MapDirection dir3= MapDirection.WEST;
+        MapDirection rotation1 = MapDirection.SOUTH;
+        MapDirection rotation2 = MapDirection.EAST;
+        MapDirection rotation3 = MapDirection.SOUTHEAST;
+
+        //then
+        assertEquals(MapDirection.SOUTH,dir1.rotate(rotation1));
+        assertEquals(MapDirection.WEST,dir2.rotate(rotation2));
+        assertEquals(MapDirection.NORTHEAST,dir3.rotate(rotation3));
     }
 }

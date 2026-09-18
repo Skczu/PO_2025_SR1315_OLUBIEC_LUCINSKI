@@ -1,6 +1,9 @@
 package agh.ics.oop.model.enums;
 
-//class for storing and providing simulation parameters set in Presenter to Simulation class
+/**
+ * class for storing and providing simulation parameters set in Presenter to Simulation class
+ */
+
 
 public record SimulationParameters(
         int mapWidth,

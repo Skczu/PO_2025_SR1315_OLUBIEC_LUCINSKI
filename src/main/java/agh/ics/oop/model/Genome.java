@@ -6,17 +6,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 public class Genome {
 
-    static final int GENES_VARIETY = 8; //genes can be from 0 to 7
+    /**
+     * genes can be from 0 to 7
+     */
+    static final int GENES_VARIETY = 8;
 
-    //singular genes of each animal
+    /**
+     * singular genes of each animal
+     */
     private final List<Integer> genes;
 
-    //gene currently in use by animal
+    /**
+     * gene currently in use by animal
+     */
     private int currentlyUsed;
 
-    //genome from random genes
+    /**
+     * genome of random genes
+     * @param length length of new genome
+     */
     public Genome(int length){
         this.genes = new ArrayList<>();
         for (int i = 0; i < length; i++) {
@@ -25,8 +36,14 @@ public class Genome {
         this.currentlyUsed=0;
     }
 
-    //genome from given genes
+    /**
+     * genome from given genes
+     * @param genes list of genome integers
+     */
     public Genome(List<Integer> genes){
+        if (genes.isEmpty()){
+            throw new IllegalArgumentException("genome cannot be empty");
+        }
         this.genes = genes;
         this.currentlyUsed=0;
     }
@@ -62,9 +79,12 @@ public class Genome {
         this.currentlyUsed = currentlyUsed;
     }
 
-    //returns information about which direction to turn and switches to next gene
+    /**
+     * @return information about which direction to turn and switches to next gene
+     */
     public MapDirection getNextDirection(){
+        int toReturn = currentlyUsed;
         currentlyUsed = (currentlyUsed + 1) % genes.size();
-        return MapDirection.fromDigit(currentlyUsed);
+        return MapDirection.fromDigit(genes.get(toReturn));
     }
 }

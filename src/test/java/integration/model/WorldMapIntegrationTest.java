@@ -15,14 +15,13 @@ public class WorldMapIntegrationTest {
     static final SimulationParameters USED_PARAMS = new SimulationParameters(10, 10, true, 4, 10, 2, 12, 3, 0, 10, 4, 2, 5, 1, 2, 3, 4);
 
     @Test
-    public void placesAnimalsOnlyOnValidPositions() {
+    void placesAnimalsOnlyOnValidPositions() {
         //when
-        Animal rabbit = new Animal(new Vector2d(0, 1), List.of(1), 5);
-        Animal owl = new Animal(new Vector2d(0, 1), List.of(1), 5);
-        Animal tigger = new Animal(new Vector2d(-1, 10), List.of(1), 5);
-        Animal eeyore = new Animal(new Vector2d(0, 0), List.of(1), 5);
+        Animal rabbit = new Animal(new Vector2d(0, 1), new Genome(List.of(1)), 5);
+        Animal owl = new Animal(new Vector2d(0, 1), new Genome(List.of(1)), 5);
+        Animal tigger = new Animal(new Vector2d(-1, 10), new Genome(List.of(1)), 5);
+        Animal eeyore = new Animal(new Vector2d(0, 0), new Genome(List.of(1)), 5);
         WorldMap map = new WorldMap(USED_PARAMS);
-
 
         //then
         assertDoesNotThrow(() -> map.place(rabbit));
@@ -33,10 +32,10 @@ public class WorldMapIntegrationTest {
 
 
     @Test
-    public void returnsAnimalAtPosition() throws IncorrectPositionException {
+    void returnsAnimalAtPosition() throws IncorrectPositionException {
         //given
         WorldMap map = new WorldMap(USED_PARAMS);
-        Animal kanga = new Animal(new Vector2d(2, 3), List.of(1), 5);
+        Animal kanga = new Animal(new Vector2d(2, 3), new Genome(List.of(1)), 5);
 
         //when
         map.place(kanga);
@@ -47,10 +46,10 @@ public class WorldMapIntegrationTest {
     }
 
     @Test
-    public void checksIfOccupied() throws IncorrectPositionException {
+    void checksIfOccupied() throws IncorrectPositionException {
         //when
         WorldMap map = new WorldMap(USED_PARAMS);
-        map.place(new Animal(new Vector2d(1, 3), List.of(1), 5));
+        map.place(new Animal(new Vector2d(1, 3), new Genome(List.of(1)), 5));
 
         //then
         assertTrue(map.isOccupied(new Vector2d(1, 3)));
@@ -59,45 +58,13 @@ public class WorldMapIntegrationTest {
 
 
     @Test
-    public void movesCorrectly() throws IncorrectPositionException {
+    void copulateCorrectly() throws IncorrectPositionException{
         //given
         WorldMap map = new WorldMap(USED_PARAMS);
-        Animal pooh = new Animal(new Vector2d(4, 0), List.of(7), 5);
-        Animal piglet = new Animal(new Vector2d(0, 0), List.of(4), 5);
-        Animal tigger = new Animal(new Vector2d(9, 8), List.of(2), 5);
-        Animal rabbit = new Animal(new Vector2d(8, 9), List.of(1), 5);
-        Animal owl = new Animal(new Vector2d(9, 0), List.of(3), 5);
-
-        //when
-        map.place(pooh);
-
-        map.place(piglet);
-        map.place(tigger);
-        map.place(rabbit);
-        map.place(owl);
-
-        map.move(pooh);
-        map.move(piglet);
-        map.move(tigger);
-        map.move(rabbit);
-        map.move(owl);
-
-        //then
-        assertTrue(pooh.isAt(new Vector2d(3, 1)));
-        assertTrue(piglet.isAt(new Vector2d(0, 1)));
-        assertTrue(tigger.isAt(new Vector2d(0, 8)));
-        assertTrue(rabbit.isAt(new Vector2d(9, 8)));
-        assertTrue(owl.isAt(new Vector2d(0, 1)));
-    }
-
-
-    @Test
-    public void copulateCorrectly() throws IncorrectPositionException{
-        WorldMap map = new WorldMap(USED_PARAMS);
-        Animal animal1 = new Animal(new Vector2d(4, 0), List.of(7), 150);
-        Animal animal2 = new Animal(new Vector2d(4, 0), List.of(4), 150);
-        Animal animal3 = new Animal(new Vector2d(4, 0), List.of(4), 1);
-        Animal animal4 = new Animal(new Vector2d(4, 0), List.of(4), 1);
+        Animal animal1 = new Animal(new Vector2d(4, 0), new Genome(List.of(7)), 150);
+        Animal animal2 = new Animal(new Vector2d(4, 0), new Genome(List.of(4)), 150);
+        Animal animal3 = new Animal(new Vector2d(4, 0), new Genome(List.of(4)), 1);
+        Animal animal4 = new Animal(new Vector2d(4, 0), new Genome(List.of(4)), 1);
 
         //when
         map.place(animal1);
@@ -113,15 +80,19 @@ public class WorldMapIntegrationTest {
 
 
     @Test
-    public void removesDead() throws IncorrectPositionException{
+    void removesDead() throws IncorrectPositionException{
         //given
         WorldMap map = new WorldMap(USED_PARAMS);
-        Animal animal1 = new Animal(new Vector2d(4, 0), List.of(7), 150);
-        Animal animal2 = new Animal(new Vector2d(4, 1), List.of(4), -1);
+        Animal animal1 = new Animal(new Vector2d(4, 0), new Genome(List.of(7)), 150);
+        Animal animal2 = new Animal(new Vector2d(4, 1), new Genome(List.of(4)), -1);
+        Animal animal3 = new Animal(new Vector2d(4, 1), new Genome(List.of(4)), 0);
+        Animal animal4 = new Animal(new Vector2d(4, 4), new Genome(List.of(4)), -1);
 
         //when
         map.place(animal1);
         map.place(animal2);
+        map.place(animal3);
+        map.place(animal4);
         map.removeDeadAnimals();
 
         //then
@@ -130,10 +101,11 @@ public class WorldMapIntegrationTest {
     }
 
     @Test
-    public void eatsGrass() throws IncorrectPositionException{
+    void eatsGrass() throws IncorrectPositionException{
+        //given
         WorldMap map = new WorldMap(USED_PARAMS);
-        Animal eeyore = new Animal(new Vector2d(4, 0), List.of(7), 150);
-        Animal pooh = new Animal(new Vector2d(4, 0), List.of(7), 15);
+        Animal eeyore = new Animal(new Vector2d(4, 0), new Genome(List.of(7)), 150);
+        Animal pooh = new Animal(new Vector2d(4, 0),new Genome(List.of(7)), 15);
         map.getGrasses().put(new Vector2d(4,0),new Grass(new Vector2d(4,0)));
 
         //when
@@ -146,21 +118,89 @@ public class WorldMapIntegrationTest {
         assertEquals(15,pooh.getEnergy());
     }
 
+    @Test
+    void movesCorrectly() throws IncorrectPositionException {
+        //given
+        WorldMap map = new WorldMap(USED_PARAMS);
+        Animal pooh = new Animal(new Vector2d(4, 0), new Genome(List.of(7)), 5);
+        Animal piglet = new Animal(new Vector2d(0, 0), new Genome(List.of(4)), 5);
+        Animal tigger = new Animal(new Vector2d(9, 8), new Genome(List.of(2)), 5);
+        Animal rabbit = new Animal(new Vector2d(8, 9), new Genome(List.of(1)), 5);
+        Animal owl = new Animal(new Vector2d(9, 0), new Genome(List.of(3)), 5);
+
+        //when
+        map.place(pooh);
+        map.place(piglet);
+        map.place(tigger);
+        map.place(rabbit);
+        map.place(owl);
+
+        pooh.rotate();
+        piglet.rotate();
+        tigger.rotate();
+        rabbit.rotate();
+        owl.rotate();
+
+        map.regularMove(pooh);
+        map.regularMove(piglet);
+        map.regularMove(tigger);
+        map.regularMove(rabbit);
+        map.regularMove(owl);
+
+        //then
+        assertTrue(pooh.isAt(new Vector2d(3, 1)));
+        assertTrue(piglet.isAt(new Vector2d(0, 1)));
+        assertTrue(tigger.isAt(new Vector2d(0, 8)));
+        assertTrue(rabbit.isAt(new Vector2d(9, 8)));
+        assertTrue(owl.isAt(new Vector2d(0, 1)));
+    }
 
 
     @Test
-    public void movesFastCorrectly() throws IncorrectPositionException{
+    void movesFastCorrectly() throws IncorrectPositionException{
         WorldMap map = new WorldMap(USED_PARAMS);
-        Animal tigger = new Animal(new Vector2d(4, 0), List.of(0), 150);
-        Animal piglet = new Animal(new Vector2d(5, 1), List.of(6), 3);
-        map.getGrasses().put(new Vector2d(4,0),new Grass(new Vector2d(4,0)));
-
+        Animal tigger = new Animal(new Vector2d(4, 0), new Genome(List.of(0)), 10);
+        Animal piglet = new Animal(new Vector2d(5, 1),new Genome( List.of(2)), 1);
+        Animal eeyore = new Animal(new Vector2d(3, 1),new Genome( List.of(4)), 1);
+        map.getGrasses().put(new Vector2d(4,1),new Grass(new Vector2d(4,0)));
 
         //when
         map.place(tigger);
         map.place(piglet);
-        map.move(piglet);
-        map.fastMove(tigger,5);
+        map.place(eeyore);
+        piglet.rotate();
+        tigger.rotate();
+        eeyore.rotate();
+
+        map.fastMove(tigger);
+        map.fastMove(piglet);
+        map.fastMove(eeyore);
+
+        //then
+        assertEquals(new Vector2d(4,4),tigger.getPosition());
+        assertEquals(8,tigger.getEnergy());
+        assertEquals(new Vector2d(6,1),piglet.getPosition());
+        assertEquals(-1,piglet.getEnergy());
+        assertEquals(new Vector2d(3,0),eeyore.getPosition());
+        assertEquals(-1,eeyore.getEnergy());
+    }
+
+    @Test
+    void collidesCorrectly() throws IncorrectPositionException{
+        //given
+        WorldMap map = new WorldMap(USED_PARAMS);
+        Animal tigger = new Animal(new Vector2d(4, 0), new Genome(List.of(0)), 150);
+        Animal piglet = new Animal(new Vector2d(5, 1),new Genome( List.of(6)), 3);
+        map.getGrasses().put(new Vector2d(4,1),new Grass(new Vector2d(4,0)));
+
+        //when
+        map.place(tigger);
+        map.place(piglet);
+        piglet.rotate();
+        tigger.rotate();
+
+        map.regularMove(piglet);
+        map.fastMove(tigger);
 
 
         //then collision with piglet
@@ -169,12 +209,34 @@ public class WorldMapIntegrationTest {
         assertEquals(new Vector2d(4,1),piglet.getPosition());
     }
 
+    @Test
+    void movesAccordingToGenome() throws IncorrectPositionException{
+        WorldMap map = new WorldMap(USED_PARAMS);
+        Animal tigger = new Animal(new Vector2d(4, 0), new Genome(List.of(0,1)), 150);
+
+
+        //when
+        map.place(tigger);
+
+        tigger.rotate();
+        map.regularMove(tigger);
+
+        tigger.rotate();
+        map.regularMove(tigger);
+
+        tigger.rotate();
+        map.regularMove(tigger);
+
+        //then
+        assertEquals(new Vector2d(6,3),tigger.getPosition());
+    }
 
     @Test
-    public void growsGrassIfPossible() throws IncorrectPositionException{
+    void growsGrassIfPossible() throws IncorrectPositionException{
+        //given
         WorldMap map = new WorldMap(USED_PARAMS);
-        Animal tigger = new Animal(new Vector2d(4, 0), List.of(0), 150);
-        Animal piglet = new Animal(new Vector2d(5, 1), List.of(6), 3);
+        Animal tigger = new Animal(new Vector2d(4, 0), new Genome(List.of(0)), 150);
+        Animal piglet = new Animal(new Vector2d(5, 1), new Genome(List.of(6)), 3);
         map.getGrasses().put(new Vector2d(4,0),new Grass(new Vector2d(4,0)));
 
         //when

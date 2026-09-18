@@ -41,6 +41,10 @@ public class Animal implements WorldElement, Comparable<Animal> {
         return mapPosition.equals(position);
     }
 
+    /**
+     * moves changes animal position and orientation (if bounced of the edge after move)
+     * @param moveValidator map on which animal moves
+     */
     public void move(MoveValidator moveValidator){
         Pair<MapDirection,Vector2d> newPosition = moveValidator.positionAfterMove(currentOrientation,mapPosition);
 
@@ -67,18 +71,26 @@ public class Animal implements WorldElement, Comparable<Animal> {
         age+=1;
     }
 
+    /**
+     *
+     * @param fastAnimalsEnergyThreshold minimal amount of energy animal has to make it move faster
+     * @param fastAnimalsSpeedIncreaseThreshold how much energy is required to get to the next speed level
+     * @param fastAnimalsMaxSpeed maximal speed
+     */
     public void setSpeed(int fastAnimalsEnergyThreshold, int fastAnimalsSpeedIncreaseThreshold, int fastAnimalsMaxSpeed){
-        if (energy >= fastAnimalsMaxSpeed) {
-         speed=1;
-         return;
-        }
-
         if (energy > fastAnimalsEnergyThreshold) {
-            speed = 1 + (energy - fastAnimalsEnergyThreshold + 1) / fastAnimalsSpeedIncreaseThreshold;
+            speed = Math.min(fastAnimalsMaxSpeed,1 + (energy - fastAnimalsEnergyThreshold + 1) / fastAnimalsSpeedIncreaseThreshold);
+        }
+        else {
+            speed = 1;
         }
     }
 
-    //decides which animal is superior and eats before others on the same field
+    /**
+     *
+     * @param other the object to be compared.
+     * @return if animal that has more energy > is older > has more children
+     */
     @Override
     public int compareTo(Animal other) {
         return Comparator
@@ -95,6 +107,10 @@ public class Animal implements WorldElement, Comparable<Animal> {
 
     public MapDirection getCurrentOrientation() {
         return currentOrientation;
+    }
+
+    public void setChildrenCnt(int childrenCnt) {
+        this.childrenCnt = childrenCnt;
     }
 
     public Genome getGenome() {
@@ -118,7 +134,6 @@ public class Animal implements WorldElement, Comparable<Animal> {
     }
 
     public void rotate(){
-        currentOrientation = currentOrientation.rotate(currentOrientation, genome.getNextDirection());
+        currentOrientation = currentOrientation.rotate(genome.getNextDirection());
     }
-
 }

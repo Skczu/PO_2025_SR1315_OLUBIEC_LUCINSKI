@@ -18,6 +18,12 @@ public class GenomeGenerator {
         this.minMutationCnt = minMutationCnt;
     }
 
+    /**
+     * generates new genome as a slice of stronger parent's genome concatenated with weake ones
+     * @param strongerParent stronger parent that copulates
+     * @param weakerParent weaker parent that copulates
+     * @return genome of the child
+     */
     public Genome generateGenome(Animal strongerParent, Animal weakerParent) {
         int strongerParentEnergy = strongerParent.getEnergy();
         int weakerParentEnergy = weakerParent.getEnergy();
@@ -43,6 +49,12 @@ public class GenomeGenerator {
         return new Genome(newGeneList);
     }
 
+    /**
+     * calculates the point which separates parents genome slices
+     * @param strongerParentEnergy energy od the stronger parent before copulation
+     * @param weakerParentEnergy energy of the weaker parent before copulation
+     * @return index in genome array to split
+     */
     private int getGenomeSplitPoint(int strongerParentEnergy, int weakerParentEnergy) {
         float genomeSplitRatio = (float) strongerParentEnergy / (strongerParentEnergy + weakerParentEnergy);
         int genomeSplitPoint = (int) (genomeLength * genomeSplitRatio);
@@ -50,9 +62,13 @@ public class GenomeGenerator {
         return Math.random() < 0.5 ? genomeSplitPoint : genomeLength - genomeSplitPoint;
     }
 
-    //mutates genes by
+    /**
+     * mutates random amount of random genes in a genome
+     * allows mutations to happen multiple times on the same gene during one mutation
+     * @param genome genome to mutate
+     */
     private void mutate(Genome genome) {
-        int mutatedCount = minMutationCnt + (int) (Math.random() * Math.min(maxMutationCnt,genomeLength));
+        int mutatedCount = minMutationCnt + (int) (Math.random() * maxMutationCnt);
 
         List<Integer> positions = new ArrayList<>();
 
@@ -61,10 +77,9 @@ public class GenomeGenerator {
         }
 
         Collections.shuffle(positions);
-        positions = positions.subList(0,mutatedCount+1);
 
         for (int i = 0; i < mutatedCount; i++) {
-            genome.setRandomGene(positions.get(i));
+            genome.setRandomGene(positions.get(i%positions.size()));
         }
     }
 }
