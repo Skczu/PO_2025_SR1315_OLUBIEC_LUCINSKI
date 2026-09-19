@@ -8,64 +8,96 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane minHeight="700.0" minWidth="850.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.SimulationPresenter">
+<BorderPane minHeight="750.0" minWidth="950.0" styleClass="root-pane" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.SimulationPresenter">
+
     <center>
-        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+        <VBox alignment="CENTER" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets top="20.0" right="20.0" bottom="20.0" left="20.0" />
+            </padding>
             <children>
-                <Canvas fx:id="mapGrid" height="500.0" width="500.0">
-               <VBox.margin>
-                  <Insets bottom="20.0" />
-               </VBox.margin></Canvas>
-                <Button fx:id="togglePauseButton" onAction="#onPauseToggle" text="STOP" />
+                <StackPane styleClass="canvas-container">
+                    <VBox.margin>
+                        <Insets bottom="35.0" />
+                    </VBox.margin>
+                    <padding>
+                        <Insets top="15.0" right="15.0" bottom="15.0" left="15.0" />
+                    </padding>
+                    <Canvas fx:id="mapGrid" height="500.0" width="500.0" />
+                </StackPane>
+                <Button fx:id="togglePauseButton" onAction="#onPauseToggle" prefWidth="180.0" prefHeight="45.0" styleClass="btn-stop" text="STOP"/>
             </children>
         </VBox>
-
     </center>
-   <left>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0" spacing="10.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label fx:id="livingAnimalsLabel" text="Living animals" />
-            <Label fx:id="grassFieldsLabel" text="Grass fields" />
-            <Label fx:id="unoccupiedFieldsLabel" text="Unoccupied fields" />
-            <Label fx:id="avgLifeSpanLabel" text="Avg life span" />
-            <Label fx:id="avgLivingEnergyLabel" text="Avg living energy" />
-            <Label fx:id="avgChildrenCntLabel" text="Avg living children cnt" />
-            <VBox alignment="CENTER" prefHeight="100.0" prefWidth="100.0">
-               <children>
-                  <Label fx:id="genomeVboxLabel" text="Most common genomes" />
-                  <Label fx:id="firstGenome" text="• -" />
-                  <Label fx:id="secondGenome" text="• -" />
-                  <Label fx:id="thirdGenome" text="• -" />
-               </children>
-               <VBox.margin>
-                  <Insets top="10.0" />
-               </VBox.margin>
-            </VBox>
-             <Label fx:id="displayedStatisticsLabel" text="Select a statistic to display on the chart">
-               <VBox.margin>
-                  <Insets top="30.0" />
-               </VBox.margin></Label>
-             <ChoiceBox fx:id="statsChoiceBox" onAction="#onChoiceChanged" value="Living animals">
-                 <items>
-                     <FXCollections fx:factory="observableArrayList">
-                         <String fx:value="Living animals" />
-                         <String fx:value="Grass fields" />
-                         <String fx:value="Unoccupied fields" />
-                         <String fx:value="Avg life span" />
-                         <String fx:value="Avg living energy" />
-                         <String fx:value="Avg living children cnt" />
-                     </FXCollections>
-                 </items>
-             </ChoiceBox>
-             <LineChart fx:id="statsChart" animated="false">
-                 <xAxis>
-                     <NumberAxis label="Days" tickUnit="0.2" />
-                     <CategoryAxis side="BOTTOM" />
-                 </xAxis>
-                 <yAxis>
-                     <NumberAxis lowerBound="-1.0" upperBound="0.0" />
-                 </yAxis>
-            </LineChart>
-         </children></VBox>
-   </left>
+
+    <left>
+        <VBox alignment="TOP_CENTER" prefWidth="320.0" spacing="10.0" styleClass="sidebar" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets top="25.0" right="20.0" bottom="20.0" left="20.0" />
+            </padding>
+            <children>
+                <Label styleClass="sidebar-header" text="Statistics">
+                    <VBox.margin>
+                        <Insets bottom="5.0" />
+                    </VBox.margin>
+                </Label>
+
+                <Label fx:id="livingAnimalsLabel" maxWidth="Infinity" styleClass="stat-badge, badge-red" text="Living animals:" />
+
+                <Label fx:id="grassFieldsLabel" maxWidth="Infinity" styleClass="stat-badge, badge-green" text="Grass fields:" />
+
+                <Label fx:id="unoccupiedFieldsLabel" maxWidth="Infinity" styleClass="stat-badge, badge-grey" text="Unoccupied fields:" />
+
+                <Label fx:id="avgLifeSpanLabel" maxWidth="Infinity" styleClass="stat-badge, badge-blue" text="Avg life span:" />
+
+                <Label fx:id="avgLivingEnergyLabel" maxWidth="Infinity" styleClass="stat-badge, badge-yellow" text="Avg living energy:" />
+
+                <Label fx:id="avgChildrenCntLabel" maxWidth="Infinity" styleClass="stat-badge, badge-purple" text="Avg living children cnt:" />
+
+                <VBox alignment="CENTER" spacing="6.0" styleClass="genotype-container">
+                    <VBox.margin>
+                        <Insets top="10.0" />
+                    </VBox.margin>
+                    <children>
+                        <Label fx:id="genomeVboxLabel" styleClass="genotype-header" text="Most common genomes">
+                            <VBox.margin>
+                                <Insets bottom="4.0"/>
+                            </VBox.margin>
+                        </Label>
+                        <Label fx:id="firstGenome" text="• -" wrapText="true" textAlignment="CENTER" styleClass="genotype-label" />
+                        <Label fx:id="secondGenome" text="• -" wrapText="true" textAlignment="CENTER" styleClass="genotype-label" />
+                        <Label fx:id="thirdGenome" text="• -" wrapText="true" textAlignment="CENTER" styleClass="genotype-label" />
+                    </children>
+                </VBox>
+
+                <Label fx:id="displayedStatisticsLabel" styleClass="chart-header" text="Statistics chart" textAlignment="CENTER">
+                    <VBox.margin>
+                        <Insets top="15.0" />
+                    </VBox.margin>
+                </Label>
+
+                <ChoiceBox fx:id="statsChoiceBox" onAction="#onChoiceChanged" maxWidth="Infinity" styleClass="custom-choice-box" value="Living animals">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Living animals" />
+                            <String fx:value="Grass fields" />
+                            <String fx:value="Unoccupied fields" />
+                            <String fx:value="Avg life span" />
+                            <String fx:value="Avg living energy" />
+                            <String fx:value="Avg living children cnt" />
+                        </FXCollections>
+                    </items>
+                </ChoiceBox>
+
+                <LineChart fx:id="statsChart" animated="false" prefHeight="220.0" styleClass="transparent-chart">
+                    <xAxis>
+                        <NumberAxis label="Days" tickUnit="0.2" />
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis lowerBound="-1.0" upperBound="0.0" />
+                    </yAxis>
+                </LineChart>
+            </children>
+        </VBox>
+    </left>
 </BorderPane>

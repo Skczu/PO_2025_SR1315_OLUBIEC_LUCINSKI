@@ -1,0 +1,217 @@
+/* =========================================
+   GLOBAL BACKGROUNDS AND CONTAINERS
+   ========================================= */
+.root-pane {
+    -fx-background-color: #E8F0EA;
+}
+
+.config-card {
+    -fx-background-color: #FDFDFD;
+    -fx-background-radius: 12;
+    -fx-padding: 20;
+    -fx-border-color: #CFD8D1;
+    -fx-border-radius: 12;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 15, 0, 3, 0);
+}
+
+.canvas-container {
+    -fx-background-color: #FAFAFA;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 20, 0, 0, 8);
+}
+
+.sidebar {
+    -fx-background-color: #FDFDFD;
+    -fx-border-color: #CFD8D1;
+    -fx-border-width: 0 1 0 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 15, 0, 3, 0);
+}
+
+.custom-separator {
+    -fx-background-color: #E8F0EA;
+}
+
+/* =========================================
+   HEADERS AND TEXTS (MAIN.FXML)
+   ========================================= */
+.main-header {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2E4033;
+}
+
+.section-label-green {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #3E5A44;
+    -fx-padding: 0 0 5 0;
+}
+
+.subsection-label-green {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #3E5A44;
+    -fx-padding: 5 0 5 0;
+}
+
+.section-label-red {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #C62828;
+    -fx-padding: 0 0 5 0;
+}
+
+.section-label-purple {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #6A1B9A;
+    -fx-padding: 0 0 5 0;
+}
+
+.param-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #424242;
+}
+
+.error-label {
+    -fx-text-fill: #D32F2F;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.fast-animals-checkbox {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1565C0;
+}
+
+/* =========================================
+   HEADERS AND TEXTS (SIMULATION.FXML)
+   ========================================= */
+.sidebar-header {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2E4033;
+}
+
+.chart-header {
+    -fx-font-weight: bold;
+    -fx-text-fill: #455A64;
+}
+
+.transparent-chart {
+    -fx-background-color: transparent;
+}
+
+/* =========================================
+   COLORFUL STAT BADGES (BADGES)
+   ========================================= */
+.stat-badge {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 12;
+    -fx-background-radius: 6;
+}
+
+.badge-red { -fx-background-color: #FFEBEE; -fx-text-fill: #C62828; }
+.badge-green { -fx-background-color: #E8F5E9; -fx-text-fill: #2E7D32; }
+.badge-grey { -fx-background-color: #F5F5F5; -fx-text-fill: #424242; }
+.badge-blue { -fx-background-color: #E3F2FD; -fx-text-fill: #1565C0; }
+.badge-yellow { -fx-background-color: #FFF8E1; -fx-text-fill: #F57F17; }
+.badge-purple { -fx-background-color: #F3E5F5; -fx-text-fill: #6A1B9A; }
+
+/* =========================================
+   GENOMES
+   ========================================= */
+.genotype-container {
+    -fx-background-color: #F0F4F1;
+    -fx-background-radius: 8;
+    -fx-padding: 12;
+    -fx-border-color: #D1DED5;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+}
+
+.genotype-header {
+    -fx-font-weight: bold;
+    -fx-text-fill: #3E5A44;
+    -fx-font-size: 14px;
+}
+
+.genotype-label {
+    -fx-text-fill: #4B6E52;
+    -fx-font-weight: bold;
+}
+
+/* =========================================
+   BUTTONS AND CONTROLS
+   ========================================= */
+.btn-start {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 25;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(76, 175, 80, 0.4), 10, 0, 0, 4);
+}
+
+.btn-stop {
+    -fx-background-color: #5aadff;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-background-radius: 25;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(90, 173, 255, 0.4), 10, 0, 0, 4);
+}
+
+.custom-choice-box {
+    -fx-background-color: #FDFDFD;
+    -fx-border-color: #CFD8D1;
+    -fx-border-radius: 6;
+    -fx-font-size: 16px;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.btn-start:pressed, .btn-stop:pressed {
+    -fx-translate-y: 2px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.15), 5, 0, 0, 2); /* Zmniejszenie cienia */
+}
+
+/* =========================================
+   SPINNERS
+   ========================================= */
+.spinner {
+    -fx-background-color: transparent;
+    -fx-border-color: #CFD8D1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.spinner .text-field {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #2E4033;
+    -fx-alignment: center;
+    -fx-background-radius: 0;
+}
+
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+    -fx-background-color: #F0F4F1;
+    -fx-cursor: hand;
+}
+
+.spinner .increment-arrow-button:hover,
+.spinner .decrement-arrow-button:hover {
+    -fx-background-color: #D1DED5;
+}
+
+.spinner:focused {
+    -fx-border-color: #4CAF50;
+}
+
+.spinner .increment-arrow,
+.spinner .decrement-arrow {
+    -fx-background-color: #3E5A44;
+}

@@ -5,6 +5,7 @@ import agh.ics.oop.presenter.MainPresenter;
 import agh.ics.oop.presenter.SimulationPresenter;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -27,7 +28,7 @@ public class SceneManager {
 
         Stage mainStage = new Stage();
 
-        configureStage(mainStage,viewRoot,"Simulation app");
+        configureStage(mainStage,viewRoot,"Simulation app",new Image("genome.png"));
     }
 
 
@@ -44,18 +45,20 @@ public class SceneManager {
         simulationStage.setX(mainStage.getX() + Math.random()*100 ); //window offest for clarity
         simulationStage.setY(mainStage.getY()  + Math.random()*100); //using random values for less overlapping
 
-        configureStage(simulationStage,viewRoot,"Simulation");
+
+        configureStage(simulationStage,viewRoot,"Simulation", new Image("genome.png"));
 
         presenter.startSimulation(parameters);
     }
 
 
-    private void configureStage(Stage primaryStage, BorderPane viewRoot, String title) {
+    private void configureStage(Stage primaryStage, BorderPane viewRoot, String title, Image image) {
         var scene = new Scene(viewRoot);
         primaryStage.setScene(scene);
 
         // window configuration
         primaryStage.setTitle(title);
+        primaryStage.getIcons().add(image);
         primaryStage.minWidthProperty().bind(viewRoot.minWidthProperty());
         primaryStage.minHeightProperty().bind(viewRoot.minHeightProperty());
         primaryStage.show();
