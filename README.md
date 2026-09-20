@@ -5,7 +5,7 @@
 
 > *A Java-based Darwinian evolution simulation featuring a graphical user interface powered by JavaFX. Watch as a grid-based world of steppes and jungles comes alive with creatures foraging, surviving, and passing on their genes.*
 
-<img src="Simulation.png" alt="drawing" width="500"/>
+<img src="Simulation.png" alt="drawing" width="700"/>
 
 The simulation allows users to observe the evolutionary process over thousands of days as animals adapt their movement patterns to survive in their dynamic environment.
 
@@ -53,7 +53,7 @@ The simulation allows users to observe the evolutionary process over thousands o
 
 The configuration screen allows deep customization before launching a simulation.
 
-<img src="MainMenu.png" alt="drawing" width="500"/>
+<img src="MainMenu.png" alt="drawing" width="700"/>
 
 ### 🌍 Environment and Map
 | Parameter | Default | Range | Description |
