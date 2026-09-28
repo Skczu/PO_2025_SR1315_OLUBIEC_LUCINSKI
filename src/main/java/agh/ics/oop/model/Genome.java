@@ -61,14 +61,7 @@ public class Genome {
 
     @Override
     public String toString() {
-        String genString = "[";
-        for (Integer val : genes){
-            genString += val.toString();
-            genString+=",";
-        }
-        genString = genString.substring(1,genString.length()-1);
-        genString+="]";
-        return genString;
+        return genes.toString().replace(" ", "");
     }
 
     public int getCurrentlyUsed() {

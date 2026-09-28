@@ -99,7 +99,7 @@ public class SimulationPresenter implements MapChangeListener {
         GraphicsContext graphics = mapGrid.getGraphicsContext2D();
         drawJungle(graphics);
         configureFont(graphics,(int) (cellWidth *0.5),Color.BLACK);
-        drawFrame(graphics, borderWidth,Color.TAN);
+        drawFrame(graphics);
 
         drawHeader(graphics,boundary);
         drawEntities(graphics,boundary);
@@ -163,7 +163,7 @@ public class SimulationPresenter implements MapChangeListener {
 
     private void clearGrid() {
         GraphicsContext graphics = mapGrid.getGraphicsContext2D();
-        graphics.setFill(Color.rgb(255,236,201));
+        graphics.setFill(Color.web("#F4E3B2"));
         graphics.fillRect(0, 0, mapGrid.getWidth(), mapGrid.getHeight());
     }
 
@@ -172,7 +172,7 @@ public class SimulationPresenter implements MapChangeListener {
         Vector2d upperCorner = displaySimulation.getMap().getJungleBounds().upperRight();
         int jungleHeight = (upperCorner.y()-lowerCorner.y()+1);
 
-        graphics.setFill(Color.rgb(177,255,157));
+        graphics.setFill(Color.web("#81C784"));
         graphics.fillRect(0, (lowerCorner.y()+1) * cellWidth, mapGrid.getWidth(), jungleHeight * cellWidth);
     }
 
@@ -183,13 +183,12 @@ public class SimulationPresenter implements MapChangeListener {
         graphics.setFill(color);
     }
 
-    private void drawFrame(GraphicsContext graphics, double lineWitdh, Color color){
-        graphics.setStroke(color);
-        graphics.setLineWidth(lineWitdh);
-        graphics.strokeRect(lineWitdh/2,lineWitdh/2,mapGrid.getWidth()-lineWitdh, mapGrid.getHeight()-lineWitdh);
+    private void drawFrame(GraphicsContext graphics){
+        graphics.setStroke(Color.rgb(0, 0, 0, 0.1));
+        graphics.setLineWidth(1.0);
 
         for (int x = 0; x < mapGrid.getWidth() + 1; x += cellWidth) {
-            graphics.strokeLine(x + borderOffest, 0, x + borderOffest, mapGrid.getHeight());  // BORDER_OFFSET = BORDER_WIDTH / 2
+            graphics.strokeLine(x + borderOffest, 0, x + borderOffest, mapGrid.getHeight());
         }
         for (int y = 0; y < mapGrid.getHeight() + 1; y += cellWidth) {
             graphics.strokeLine(0, y+ borderOffest, mapGrid.getWidth(), y+ borderOffest);
@@ -230,15 +229,14 @@ public class SimulationPresenter implements MapChangeListener {
                     Object object = worldMap.objectAt(position);
                     if (object!=null){
                         if (object.getClass().equals(Animal.class)){
-                            graphics.setFill(animalColor((Animal) object)); //set animal color according to its energy
-                            graphics.fillOval(x + (double) cellWidth / 4, y + (double) cellWidth / 4, (double) cellWidth / 2, (double) cellWidth / 2);
+                            double animalSize = cellWidth * 0.6;
+                            double offset = (cellWidth - animalSize) / 2.0;
 
-                            graphics.setStroke(Color.BLACK);
-                            graphics.setLineWidth((double) cellWidth / 100);
-                            graphics.strokeOval(x + (double) cellWidth / 4, y + (double) cellWidth / 4, (double) cellWidth / 2, (double) cellWidth / 2);
+                            graphics.setFill(animalColor((Animal) object));
+                            graphics.fillOval(x + offset, y + offset, animalSize, animalSize);
                         }
                         else{
-                            graphics.setFill(Color.GREEN); //for drawing grass;
+                            graphics.setFill(Color.web("#2E7D32"));
                             graphics.fillText(object.toString(),x + (double) cellWidth / 2, y + (double) cellWidth / 2);
                         }
                         graphics.setFill(Color.BLACK); //reset to default black font
@@ -282,8 +280,8 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     private Color animalColor(Animal animal){
-        double energyPercent = Math.min(((double) animal.getEnergy())/displaySimulation.getParameters().reproductionReadyEnergy(),1);
-        return Color.hsb(100*energyPercent,1,0.75);
+        double energyPercent = Math.min(((double) Math.abs(animal.getEnergy())/displaySimulation.getParameters().reproductionReadyEnergy()),1);
+        return Color.hsb(100*energyPercent,1,0.8);
     }
 
     private void scaleMap(){

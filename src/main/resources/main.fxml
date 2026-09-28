@@ -4,121 +4,126 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane minHeight="500.0" minWidth="900.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.MainPresenter">
+<BorderPane minHeight="650.0" minWidth="900.0" styleClass="root-pane" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="agh.ics.oop.presenter.MainPresenter">
     <center>
-        <VBox alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="100.0" spacing="15.0" BorderPane.alignment="CENTER">
+        <VBox alignment="CENTER" spacing="25.0" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets top="30.0" right="40.0" bottom="30.0" left="40.0" />
+            </padding>
             <children>
-            <Label text="Map Width">
-               <graphic>
-                  <Spinner fx:id="mapWidth"  initialValue="10" editable="true" min="1" max="100"/>
-               </graphic>
-            </Label>
-            <Label text="Map Height">
-               <graphic>
-                  <Spinner fx:id="mapHeight"  initialValue="10" editable="true" min="1" max="100" />
-               </graphic>
-            </Label>
-            <CheckBox fx:id="fastAnimals" mnemonicParsing="false" text="Fast Animals" />
-            <HBox prefHeight="100.0" prefWidth="200.0" spacing="15.0">
-               <children>
-                   <TitledPane animated="false" text="Animal properties">
-                       <content>
-                           <VBox>
-                               <Label text="Initial animal amount">
-                                   <graphic>
-                                       <Spinner fx:id="initialAnimalAmount"  initialValue="10" editable="true" min="1" max="10000" prefHeight="15.0" prefWidth="90.0" />
-                                   </graphic>
-                               </Label>
-                               <Label text="Initial animal energy">
-                                   <graphic>
-                                       <Spinner fx:id="initialAnimalEnergy"  initialValue="10" editable="true" min="1" max="10000"  prefHeight="15.0" prefWidth="90.0" />
-                                   </graphic>
-                               </Label>
-                               <Label text="Daily energy loss">
-                                   <graphic>
-                                       <Spinner fx:id="dailyEnergyLoss" initialValue="1" editable="true" min="-10000" max="10000"  prefHeight="15.0" prefWidth="90.0" />
-                                   </graphic>
-                               </Label>
-                               <Label text="Reproduction ready energy">
-                                   <graphic>
-                                       <Spinner fx:id="reproductionReadyEnergy"  initialValue="2" editable="true" min="0" max="10000"  prefHeight="25.0" prefWidth="90.0" />
-                                   </graphic>
-                               </Label>
-                               <Label text="Copulation energy loss">
-                                   <graphic>
-                                       <Spinner fx:id="copulationEnergyLoss"  initialValue="4" max="10000"  prefHeight="25.0" prefWidth="90.0" />
-                                   </graphic>
-                               </Label>
-                           </VBox>
-                       </content>
-                   </TitledPane>
-                  <TitledPane animated="false" text="Grass Properties">
-                     <content>
-                        <VBox>
-                            <Label text="Initial grass amount">
-                                <graphic>
-                                    <Spinner fx:id="initialGrassAmount" initialValue="40" editable="true" min="0" max="1000"  prefHeight="15.0" prefWidth="90.0" />
-                                </graphic>
-                            </Label>
-                            <Label text="Daily grass growth">
-                                <graphic>
-                                    <Spinner fx:id="dailyGrassGrowth" initialValue="15" editable="true" min="0" max="1000"  prefHeight="15.0" prefWidth="90.0" />
-                                </graphic>
-                            </Label>
-                            <Label text="Grass energy">
-                                <graphic>
-                                    <Spinner fx:id="grassEnergy" initialValue="5" max="1000"  prefHeight="15.0" prefWidth="90.0" />
-                                </graphic>
-                            </Label>
+
+                <Label styleClass="main-header" text="Simulation Configuration" />
+                <HBox alignment="CENTER" spacing="25.0">
+                    <children>
+
+                        <VBox prefWidth="260.0" spacing="15.0" styleClass="config-card">
+                            <children>
+                                <Label styleClass="section-label-green" text="Environment and Map" />
+
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <Label text="Map Width" styleClass="param-label" prefWidth="120.0"/>
+                                    <Spinner fx:id="mapWidth" styleClass="split-arrows-horizontal" initialValue="10" editable="true" min="1" max="100" prefWidth="90.0" />
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <Label text="Map Height" styleClass="param-label" prefWidth="120.0"/>
+                                    <Spinner fx:id="mapHeight" styleClass="split-arrows-horizontal" initialValue="10" editable="true" min="1" max="100" prefWidth="90.0" />
+                                </HBox>
+
+                                <Separator styleClass="custom-separator" />
+
+                                <Label styleClass="subsection-label-green" text="Grass" />
+
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <Label text="Initial grass amount" styleClass="param-label" prefWidth="120.0" wrapText="true"/>
+                                    <Spinner fx:id="initialGrassAmount" styleClass="split-arrows-horizontal" initialValue="40" editable="true" min="0" max="1000" prefWidth="90.0" />
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <Label text="Daily grass growth" styleClass="param-label" prefWidth="120.0"/>
+                                    <Spinner fx:id="dailyGrassGrowth" styleClass="split-arrows-horizontal" initialValue="15" editable="true" min="0" max="1000" prefWidth="90.0" />
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <Label text="Grass energy" styleClass="param-label" prefWidth="120.0"/>
+                                    <Spinner fx:id="grassEnergy" styleClass="split-arrows-horizontal" initialValue="5" max="1000" prefWidth="90.0" />
+                                </HBox>
+                            </children>
                         </VBox>
-                     </content>
 
-                  </TitledPane>
+                        <VBox prefWidth="280.0" spacing="15.0" styleClass="config-card">
+                            <children>
+                                <Label styleClass="section-label-red" text="Animals" />
 
-                   <TitledPane animated="false" text="Fast Animals - variant">
-                       <VBox>
-                           <Label text="Speed activation threshold">
-                               <graphic>
-                                   <Spinner fx:id="fastAnimalsEnergyThreshold" initialValue="5" editable="true" min="0" max="1000"  prefHeight="25.0" prefWidth="90.0" />
-                               </graphic>
-                           </Label>
-                           <Label text="Speed increase threshold">
-                               <graphic>
-                                   <Spinner fx:id="fastAnimalsSpeedIncreaseThreshold" initialValue="2" editable="true" min="1" max="1000"  prefHeight="25.0" prefWidth="90.0" />
-                               </graphic>
-                           </Label>
-                           <Label text="Maximum speed">
-                               <graphic>
-                                   <Spinner fx:id="fastAnimalsMaxSpeed" initialValue="8" editable="true" min="1" max="1000"  prefHeight="25.0" prefWidth="90.0" />
-                               </graphic>
-                           </Label>
-                       </VBox>
-                   </TitledPane>
-               </children>
-            </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <Label text="Initial animal amount" styleClass="param-label" prefWidth="140.0" wrapText="true"/>
+                                    <Spinner fx:id="initialAnimalAmount" styleClass="split-arrows-horizontal" initialValue="10" editable="true" min="1" max="10000" prefWidth="90.0" />
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <Label text="Initial animal energy" styleClass="param-label" prefWidth="140.0"/>
+                                    <Spinner fx:id="initialAnimalEnergy" styleClass="split-arrows-horizontal" initialValue="10" editable="true" min="1" max="10000" prefWidth="90.0" />
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <Label text="Daily energy loss" styleClass="param-label" prefWidth="140.0"/>
+                                    <Spinner fx:id="dailyEnergyLoss" styleClass="split-arrows-horizontal" initialValue="1" editable="true" min="-10000" max="10000" prefWidth="90.0" />
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <Label text="Reproduction ready energy" styleClass="param-label" prefWidth="140.0" wrapText="true"/>
+                                    <Spinner fx:id="reproductionReadyEnergy" styleClass="split-arrows-horizontal" initialValue="2" editable="true" min="0" max="10000" prefWidth="90.0" />
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <Label text="Copulation energy loss" styleClass="param-label" prefWidth="140.0" wrapText="true"/>
+                                    <Spinner fx:id="copulationEnergyLoss" styleClass="split-arrows-horizontal" initialValue="4" max="10000" prefWidth="90.0" />
+                                </HBox>
+                            </children>
+                        </VBox>
 
-                  <Label text="Minimum mutation amount">
-               <graphic>
-                        <Spinner fx:id="minimumMutationAmount" initialValue="2" editable="true" min="0" max="1000"  prefHeight="25.0" prefWidth="90.0" />
-               </graphic>
-            </Label>
-                  <Label text="Maximum mutation amount">
-               <graphic>
-                        <Spinner fx:id="maximumMutationAmount" initialValue="5" max="1000"  prefHeight="25.0" prefWidth="90.0" />
-               </graphic>
-            </Label>
-                  <Label text="Genome length">
-               <graphic>
-                        <Spinner fx:id="genomeLength" initialValue="10" editable="true" min="1" max="1000"  prefHeight="25.0" prefWidth="90.0" />
-               </graphic>
-            </Label>
+                        <VBox prefWidth="280.0" spacing="15.0" styleClass="config-card">
+                            <children>
+                                <Label styleClass="section-label-purple" text="Genome and Mutations" />
 
-                <Button fx:id="startButton" mnemonicParsing="false" onAction="#onSimulationStartClicked" text="START" />
-            <Label fx:id="invalidMovesMessage" />
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <Label text="Min mutation amount" styleClass="param-label" prefWidth="140.0" wrapText="true"/>
+                                    <Spinner fx:id="minimumMutationAmount" styleClass="split-arrows-horizontal" initialValue="2" editable="true" min="0" max="1000" prefWidth="90.0" />
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <Label text="Max mutation amount" styleClass="param-label" prefWidth="140.0" wrapText="true"/>
+                                    <Spinner fx:id="maximumMutationAmount" styleClass="split-arrows-horizontal" initialValue="5" max="1000" prefWidth="90.0" />
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <Label text="Genome length" styleClass="param-label" prefWidth="140.0"/>
+                                    <Spinner fx:id="genomeLength" styleClass="split-arrows-horizontal" initialValue="10" editable="true" min="1" max="1000" prefWidth="90.0" />
+                                </HBox>
+
+                                <Separator styleClass="custom-separator" />
+
+                                <CheckBox fx:id="fastAnimals" mnemonicParsing="false" styleClass="fast-animals-checkbox" text="Fast Animals" />
+
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <Label text="Speed activation th." styleClass="param-label" prefWidth="140.0" wrapText="true"/>
+                                    <Spinner fx:id="fastAnimalsEnergyThreshold" styleClass="split-arrows-horizontal" initialValue="5" editable="true" min="0" max="1000" prefWidth="90.0" />
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <Label text="Speed increase th." styleClass="param-label" prefWidth="140.0" wrapText="true"/>
+                                    <Spinner fx:id="fastAnimalsSpeedIncreaseThreshold" styleClass="split-arrows-horizontal" initialValue="2" editable="true" min="1" max="1000" prefWidth="90.0" />
+                                </HBox>
+                                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                    <Label text="Maximum speed" styleClass="param-label" prefWidth="140.0"/>
+                                    <Spinner fx:id="fastAnimalsMaxSpeed" styleClass="split-arrows-horizontal" initialValue="8" editable="true" min="1" max="1000" prefWidth="90.0" />
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+
+                <VBox alignment="CENTER" spacing="10.0">
+                    <VBox.margin>
+                        <Insets top="20.0" />
+                    </VBox.margin>
+                    <children>
+                        <Button fx:id="startButton" onAction="#onSimulationStartClicked" prefWidth="250.0" prefHeight="50.0" styleClass="btn-start" text="BEGIN SIMULATION"/>
+                        <Label fx:id="invalidMovesMessage" styleClass="error-label" />
+                    </children>
+                </VBox>
+
             </children>
-            <BorderPane.margin>
-                <Insets left="40.0" right="40.0" />
-            </BorderPane.margin>
         </VBox>
     </center>
 </BorderPane>
